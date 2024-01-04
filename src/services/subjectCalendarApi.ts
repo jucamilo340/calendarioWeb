@@ -1,0 +1,1 @@
+export const CREATE_SUBJECT_CALENDAR = 'api/subject';
