@@ -1,5 +1,8 @@
 import { Box, Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useFormik } from "formik";
+import {
+  createMateria,
+} from '../../../../services/materiasApi';
 
 const FormCreate = () => {
 
@@ -9,9 +12,18 @@ const FormCreate = () => {
       creditos: ''
     };
   
-    const onSubmit = (values: any) => {
-      // Add your form submission logic here
-      console.log(values);
+    const onSubmit = async (values: any) => {
+      try {
+        await createMateria({
+          materia: {
+            nombre: values.nombre,
+            credits: values.creditos,
+            horas: values.horas,
+          },
+        });
+      } catch (err) {
+        toast.error('Hubo un Error al crear las materia');
+      } 
     };
   
     const formik = useFormik({
@@ -36,18 +48,18 @@ const FormCreate = () => {
           id="horas"
           label="Horas"
           onChange={formik.handleChange}
-          value={formik.values.nombre}
+          value={formik.values.horas}
           fullWidth
-          type='horas'
+          type='number'
         />
       </div>
       <div>
         <TextField
           id="creditos"
           label="Creditos"
-          type='creditos'
+          type='number'
           onChange={formik.handleChange}
-          value={formik.values.nombre}
+          value={formik.values.creditos}
           fullWidth
         />
       </div>

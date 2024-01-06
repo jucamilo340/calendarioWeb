@@ -4,7 +4,7 @@ import {
   DELETE_EVENT_CALENDAR,
   GET_ALL_EVENTS_CALENDAR,
   UPDATE_EVENT_CALENDAR,
-} from './eventCalendarRoutes';
+} from './Routes';
 
 interface ICreateEventCalendar {
   eventCalendar: {

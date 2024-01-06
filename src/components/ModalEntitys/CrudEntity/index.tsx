@@ -1,6 +1,6 @@
 
 import FormProfesor from './profesor/Form';
-import FormMateria from './profesor/Form';
+import FormMateria from './Materia/Form';
 const CrudPanel = (props :any) => {
     return (
            props.entidad === 'profesor' ?
