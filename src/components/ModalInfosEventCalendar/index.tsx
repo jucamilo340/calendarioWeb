@@ -1,4 +1,4 @@
-import { Button, Modal, TextField } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField } from '@mui/material';
 import { CalendarApi } from '@fullcalendar/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +9,9 @@ import {
   updateEventCalendar,
 } from '../../services/eventCalendarApi';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
+import { getAllProfesores } from '../../services/profesorCalendarApi';
+import { getAllSalones } from '../../services/salonesApi';
+import { getAllMaterias } from '../../services/materiasApi';
 
 interface ICardColor {
   backgroundColor: string;
@@ -53,6 +56,38 @@ export const ModalInfosEventCalendar = ({
       textColor: color.textColor,
     });
   };
+
+  const [materias, setmaterias] = useState([]);
+  const [selectMateria, setselectMateria] = useState('')
+
+  const [profesores, setprofesores] = useState([]);
+  const [selectProfesor, setselectProfesor] = useState('');
+
+  const getMaterias = async () => {
+    const materiasAll = await getAllMaterias();
+    setmaterias(materiasAll);
+  };
+
+  const getProfesores = async () => {
+    const profesoresAll = await getAllProfesores();
+    setprofesores(profesoresAll);
+  };
+
+  const [salones, setsalones] = useState([]);
+  const [selectSalon, setselectSalon] = useState('')
+
+  const getSalones = async () => {
+    const salonesAll = await getAllSalones();
+    setsalones(salonesAll);
+  };
+
+
+  useEffect(() => {
+    getProfesores();
+    getSalones();
+    getMaterias();
+  }, [open]);
+  
 
   const handleAddedEvent = async () => {
     try {
@@ -127,12 +162,62 @@ export const ModalInfosEventCalendar = ({
       handleClose();
     }
   };
-
+  console.log(selectProfesor);
   return (
     <Modal open={open} onClose={handleClose}>
       <BoxContainer>
         <TextField label={'Adicionar título'} value={title} onChange={(e) => setTitle(e.target.value)} fullWidth />
-
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="materias-label">Materia</InputLabel>
+          <Select
+            labelId="materias-label"
+            id="materias"
+            name="materias"
+            label="Materia"
+            value={selectMateria}
+            onChange={(e:any) => setselectMateria(e?.target?.value)}
+          >
+            {materias.map((materia: any) => (
+              <MenuItem key={materia._id} value={materia}>
+                {materia.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="profesores-label">Profesor</InputLabel>
+          <Select
+            labelId="profesores-label"
+            id="profesores"
+            name="profesores"
+            label="Profesor"
+            value={selectProfesor}
+            onChange={(e:any) => setselectProfesor(e?.target?.value)}
+          >
+            {profesores.map((profesor: any) => (
+              <MenuItem key={profesor._id} value={profesor}>
+                {profesor.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="salones-label">Salon</InputLabel>
+          <Select
+            labelId="salon-label"
+            id="salones"
+            name="salones"
+            label="Salon"
+            value={selectSalon}
+            onChange={(e:any) => setselectSalon(e?.target?.value)}
+          >
+            {salones.map((salon: any) => (
+              <MenuItem key={salon._id} value={salon}>
+                {salon.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <SelectColors>
           {ListColorsCard.map((color, index) => (
             <BackgroundColorRounded
