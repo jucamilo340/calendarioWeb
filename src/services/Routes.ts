@@ -10,6 +10,14 @@ export const GET_PROFESOR_ALL = '/api/profesor/all';
 export const UPDATE_PROFESOR = '/api/profesor';
 export const DELETE_PROFESOR = (id: string) => `/api/profesor/${id}`;
 
+export const CREATE_SALON = `/api/salon`;
+export const GET_SALON = (id:string) => `/api/salon/${id}`;
+export const GET_SALON_ALL = `/api/salon/all`;
+export const UPDATE_SALON = `/api/salon`;
+export const DELETE_SALON = (id:string) => `/api/salon/${id}`;
+
+
+
 export const CREATE_EVENT_CALENDAR = 'api/eventCalendar';
 export const GET_EVENT_CALENDAR = (id: string) => `api/eventCalendar/${id}`;
 export const GET_ALL_EVENTS_CALENDAR = 'api/eventCalendar/all';
