@@ -1,17 +1,25 @@
-import { Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField } from '@mui/material';
-import { CalendarApi } from '@fullcalendar/react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { ColorsCard, ListColorsCard } from '../../constants/ListColorsCard';
+import { CalendarApi } from '@fullcalendar/react';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+} from '@mui/material';
 import {
   createEventCalendar,
   deleteEventCalendar,
   updateEventCalendar,
 } from '../../services/eventCalendarApi';
-import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
 import { getAllProfesores } from '../../services/profesorCalendarApi';
 import { getAllSalones } from '../../services/salonesApi';
 import { getAllMaterias } from '../../services/materiasApi';
+import { ColorsCard, ListColorsCard } from '../../constants/ListColorsCard';
+import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
 
 interface ICardColor {
   backgroundColor: string;
@@ -46,7 +54,7 @@ export const ModalInfosEventCalendar = ({
       });
     } else {
       setTitle('');
-      setCardColor({backgroundColor: '#039be5', textColor: '#ffffff'});
+      setCardColor({ backgroundColor: '#039be5', textColor: '#ffffff' });
     }
   }, [eventInfos, isEditCard]);
 
@@ -57,37 +65,34 @@ export const ModalInfosEventCalendar = ({
     });
   };
 
-  const [materias, setmaterias] = useState([]);
-  const [selectMateria, setselectMateria] = useState('')
+  const [materias, setMaterias] = useState([]);
+  const [selectMateria, setSelectMateria] = useState<any>('');
 
-  const [profesores, setprofesores] = useState([]);
-  const [selectProfesor, setselectProfesor] = useState('');
+  const [profesores, setProfesores] = useState([]);
+  const [selectProfesor, setSelectProfesor] = useState<any>('');
+
+  const [salones, setSalones] = useState([]);
+  const [selectSalon, setSelectSalon] = useState<any>('');
 
   const getMaterias = async () => {
     const materiasAll = await getAllMaterias();
-    setmaterias(materiasAll);
+    setMaterias(materiasAll);
   };
 
-  const getProfesores = async () => {
-    const profesoresAll = await getAllProfesores();
-    setprofesores(profesoresAll);
+  const getProfesores = async (materia: any) => {
+    const profesoresAll = await getAllProfesores(materia._id);
+    setProfesores(profesoresAll);
   };
-
-  const [salones, setsalones] = useState([]);
-  const [selectSalon, setselectSalon] = useState('')
 
   const getSalones = async () => {
     const salonesAll = await getAllSalones();
-    setsalones(salonesAll);
+    setSalones(salonesAll);
   };
 
-
   useEffect(() => {
-    getProfesores();
     getSalones();
     getMaterias();
   }, [open]);
-  
 
   const handleAddedEvent = async () => {
     try {
@@ -95,11 +100,14 @@ export const ModalInfosEventCalendar = ({
 
       const eventCalendar = await createEventCalendar({
         eventCalendar: {
-          title: title === '' ? 'Sem título' : title,
+          title: title === '' ? 'Sin título' : title,
           start: eventInfos.startStr,
           end: eventInfos.endStr,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
+          profesor: selectProfesor._id,
+          materia: selectMateria._id,
+          salon: selectSalon._id,
         },
       });
 
@@ -112,7 +120,7 @@ export const ModalInfosEventCalendar = ({
         textColor: cardColor.textColor,
       });
     } catch (err) {
-      toast.error('Hubo un Error al crear las materia');
+      toast.error('Hubo un error al crear la clase');
     } finally {
       setTitle('');
       handleClose();
@@ -124,7 +132,7 @@ export const ModalInfosEventCalendar = ({
       await deleteEventCalendar({ id: eventInfos.event.id });
       eventInfos.event.remove();
     } catch (error) {
-      toast.error('Houve um erro ao deletar o evento');
+      toast.error('Hubo un error al eliminar la clase');
     } finally {
       setTitle('');
       handleClose();
@@ -138,7 +146,7 @@ export const ModalInfosEventCalendar = ({
       const eventCalendarUpdated = {
         eventCalendar: {
           _id: eventInfos.event.id,
-          title: title !== '' ? title : 'Sem título',
+          title: 'Sin título',
           start: eventInfos.event.startStr,
           end: eventInfos.event.endStr,
           backgroundColor: cardColor.backgroundColor,
@@ -149,24 +157,23 @@ export const ModalInfosEventCalendar = ({
       const currentEvent = calendarApi.getEventById(eventInfos.event.id);
 
       if (currentEvent) {
-        currentEvent.setProp('title', title !== '' ? title : 'Sem título');
+        currentEvent.setProp('title', title !== '' ? title : 'Sin título');
         currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
         currentEvent.setProp('textColor', cardColor.textColor);
       }
 
       await updateEventCalendar(eventCalendarUpdated);
     } catch (error) {
-      toast.error('Houve um erro ao atualizar o evento');
+      toast.error('Hubo un error al actualizar la clase');
     } finally {
       setTitle('');
       handleClose();
     }
   };
-  console.log(selectProfesor);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <BoxContainer>
-        <TextField label={'Adicionar título'} value={title} onChange={(e) => setTitle(e.target.value)} fullWidth />
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel id="materias-label">Materia</InputLabel>
           <Select
@@ -175,7 +182,10 @@ export const ModalInfosEventCalendar = ({
             name="materias"
             label="Materia"
             value={selectMateria}
-            onChange={(e:any) => setselectMateria(e?.target?.value)}
+            onChange={(e: any) => {
+              getProfesores(e?.target?.value);
+              setSelectMateria(e?.target?.value);
+            }}
           >
             {materias.map((materia: any) => (
               <MenuItem key={materia._id} value={materia}>
@@ -192,7 +202,7 @@ export const ModalInfosEventCalendar = ({
             name="profesores"
             label="Profesor"
             value={selectProfesor}
-            onChange={(e:any) => setselectProfesor(e?.target?.value)}
+            onChange={(e: any) => setSelectProfesor(e?.target?.value)}
           >
             {profesores.map((profesor: any) => (
               <MenuItem key={profesor._id} value={profesor}>
@@ -209,7 +219,7 @@ export const ModalInfosEventCalendar = ({
             name="salones"
             label="Salon"
             value={selectSalon}
-            onChange={(e:any) => setselectSalon(e?.target?.value)}
+            onChange={(e: any) => setSelectSalon(e?.target?.value)}
           >
             {salones.map((salon: any) => (
               <MenuItem key={salon._id} value={salon}>
@@ -241,12 +251,17 @@ export const ModalInfosEventCalendar = ({
           onClick={isEditCard ? handleUpdatedEvent : handleAddedEvent}
           sx={{ marginTop: '0.5rem' }}
         >
-          {isEditCard ? 'Atualizar evento' : 'Adicionar evento'}
+          {isEditCard ? 'Actualizar Clase' : 'Crear Clase'}
         </Button>
 
         {isEditCard && (
-          <Button variant="contained" fullWidth sx={{ marginTop: '0.5rem' }} onClick={handleDeleteEvent}>
-            Excluir evento
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ marginTop: '0.5rem' }}
+            onClick={handleDeleteEvent}
+          >
+            Eliminar Clase
           </Button>
         )}
       </BoxContainer>

@@ -11,6 +11,9 @@ interface ICreateEventCalendar {
     title: string;
     end: string;
     start: string;
+    profesor: string;
+    materia: string,
+    salon: string;
     backgroundColor: string;
     textColor: string;
   };

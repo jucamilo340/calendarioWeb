@@ -25,6 +25,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
 
   const modalInfosEvent = useDisclosure(false);
 
+
   const handleAddEventSelectAndOpenModal = (selectInfo: any) => {
     setIsEditCard(false);
     setEventInfos(selectInfo);
@@ -47,6 +48,9 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
           end: changeInfo.event.endStr,
           backgroundColor: changeInfo.event.backgroundColor,
           textColor: changeInfo.event.textColor,
+          profesor: changeInfo.event.profesor.nombre,
+          materia: changeInfo.event.materia.nombre,
+          salon: changeInfo.event.salon.nombre,
         },
       };
 
@@ -57,11 +61,8 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   };
 
   const now = new Date();
-  const oneWeekLater = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
-  const start = "Mon Dec 8 2023 19:55:57 GMT-0500 (GMT-05:00)";
-  const end = "Mon Dec 15 2023 00:00:00 GMT-0500 (GMT-05:00)";
 
-  console.log(weekends.weekendsVisible);
+  console.log(eventsCalendar);
   
 
   return (

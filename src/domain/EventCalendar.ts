@@ -4,6 +4,9 @@ export interface IEventCalendar {
   title: string;
   end: string;
   start: string;
+  profesor: any;
+  materia: any;
+  salon: any;
   user: string;
 }
 

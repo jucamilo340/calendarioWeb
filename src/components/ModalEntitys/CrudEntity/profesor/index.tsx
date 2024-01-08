@@ -101,9 +101,14 @@ const ProfesoresList: React.FC = () => {
           {profesores.map((profesor) => (
   <TableRow key={profesor._id}> {/* Cambia de profesor._id a profesor.id */}
     <TableCell>{profesor._id}</TableCell>
-    {console.log(profesor)}
     <TableCell>{profesor.nombre}</TableCell>
-    <TableCell>{profesor.disponibilidad.join(', ')}</TableCell>
+    <TableCell>
+    {profesor.disponibilidad.map((dis: any) => (
+      <>
+      <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br/>
+      </>
+    ))}
+    </TableCell>
     <TableCell>
       <Button onClick={() => handleEdit(profesor)} color="primary">
         Editar

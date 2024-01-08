@@ -65,7 +65,7 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
 
         {/* Ajusta según la cantidad de rangos horarios que desees */}
         <Button variant="outlined" onClick={handleOpen} sx={{ mb: 2 }}>
-          Abrir Modal
+         Abrir disponibilidad Horaria
         </Button>
 
         <Dialog open={open} onClose={handleClose}>

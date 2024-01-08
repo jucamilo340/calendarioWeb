@@ -47,7 +47,7 @@ const Home = ({ listAllEventsCalendar }: IHomeProps) => {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const eventsCalendar = await getAllEventsCalendar();
-  const listAllEventsCalendar = mapArrayEventCalendar(eventsCalendar)
+  const listAllEventsCalendar = mapArrayEventCalendar(eventsCalendar);
 
   return {
     props: {
