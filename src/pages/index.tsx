@@ -24,7 +24,6 @@ const Home = ({ listAllEventsCalendar }: IHomeProps) => {
     setOpenModal(false);
   };
 
-  
   return (
     <>
       <Head>

@@ -48,15 +48,12 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
           end: changeInfo.event.endStr,
           backgroundColor: changeInfo.event.backgroundColor,
           textColor: changeInfo.event.textColor,
-          profesor: changeInfo.event.profesor.nombre,
-          materia: changeInfo.event.materia.nombre,
-          salon: changeInfo.event.salon.nombre,
         },
       };
 
       await updateEventCalendar(eventCalendarUpdated);
     } catch (err) {
-      toast.error('Houve um erro ao atualizar o evento');
+      toast.error('Hubo un error al actualizar la Clase');
     }
   };
 
@@ -92,7 +89,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       select={handleAddEventSelectAndOpenModal}
       eventClick={handleEditEventSelectAndOpenModal}
       eventChange={handleUpdateEventSelect}
-      initialEvents={eventsCalendar}
+      events={eventsCalendar}
       // visibleRange={{ start: start, end: end }}
       longPressDelay={1000}
       eventLongPressDelay={1000}

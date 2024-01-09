@@ -20,6 +20,7 @@ import { getAllSalones } from '../../services/salonesApi';
 import { getAllMaterias } from '../../services/materiasApi';
 import { ColorsCard, ListColorsCard } from '../../constants/ListColorsCard';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
+import { ContactlessOutlined } from '@mui/icons-material';
 
 interface ICardColor {
   backgroundColor: string;
@@ -45,7 +46,19 @@ export const ModalInfosEventCalendar = ({
     textColor: '#ffffff',
   });
 
+
+  const [materias, setMaterias] = useState([]);
+  const [selectMateria, setSelectMateria] = useState<any>('');
+
+  const [profesores, setProfesores] = useState([]);
+  const [selectProfesor, setSelectProfesor] = useState<any>('');
+
+  const [salones, setSalones] = useState([]);
+  const [selectSalon, setSelectSalon] = useState<any>('');
+
   useEffect(() => {
+    getSalones();
+    getMaterias();
     if (isEditCard) {
       setTitle(eventInfos?.event?.title);
       setCardColor({
@@ -58,6 +71,7 @@ export const ModalInfosEventCalendar = ({
     }
   }, [eventInfos, isEditCard]);
 
+
   const handleSelectCardColor = (color: ColorsCard) => {
     setCardColor({
       backgroundColor: color.backgroundColor,
@@ -65,34 +79,34 @@ export const ModalInfosEventCalendar = ({
     });
   };
 
-  const [materias, setMaterias] = useState([]);
-  const [selectMateria, setSelectMateria] = useState<any>('');
-
-  const [profesores, setProfesores] = useState([]);
-  const [selectProfesor, setSelectProfesor] = useState<any>('');
-
-  const [salones, setSalones] = useState([]);
-  const [selectSalon, setSelectSalon] = useState<any>('');
 
   const getMaterias = async () => {
     const materiasAll = await getAllMaterias();
     setMaterias(materiasAll);
+    if (isEditCard) {
+      const materia = materiasAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.materia._id);
+      setSelectMateria(materia);
+      getProfesores(materia._id);
+    }
   };
 
   const getProfesores = async (materia: any) => {
     const profesoresAll = await getAllProfesores(materia._id);
     setProfesores(profesoresAll);
+    if (isEditCard) {
+      const profesor = profesoresAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.profesor._id);
+      setSelectProfesor(profesor);
+    }
   };
 
   const getSalones = async () => {
     const salonesAll = await getAllSalones();
     setSalones(salonesAll);
+    if (isEditCard) {
+      const salon = salonesAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.salon._id);
+      setSelectSalon(salon);
+    }
   };
-
-  useEffect(() => {
-    getSalones();
-    getMaterias();
-  }, [open]);
 
   const handleAddedEvent = async () => {
     try {
@@ -118,6 +132,9 @@ export const ModalInfosEventCalendar = ({
         end: eventCalendar.endStr,
         backgroundColor: cardColor.backgroundColor,
         textColor: cardColor.textColor,
+        profesor: selectProfesor,
+        materia: selectMateria,
+        salon: selectSalon,
       });
     } catch (err) {
       toast.error('Hubo un error al crear la clase');
@@ -151,15 +168,21 @@ export const ModalInfosEventCalendar = ({
           end: eventInfos.event.endStr,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
+          profesor: selectProfesor._id,
+          materia: selectMateria._id,
+          salon: selectSalon._id,
         },
       };
 
-      const currentEvent = calendarApi.getEventById(eventInfos.event.id);
+      const currentEvent = calendarApi.getEventById(eventInfos?.event?.id); 
 
       if (currentEvent) {
         currentEvent.setProp('title', title !== '' ? title : 'Sin título');
         currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
         currentEvent.setProp('textColor', cardColor.textColor);
+        currentEvent.setExtendedProp('profesor', selectProfesor);
+        currentEvent.setExtendedProp('materia', selectMateria);
+        currentEvent.setExtendedProp('salon', selectSalon);
       }
 
       await updateEventCalendar(eventCalendarUpdated);
