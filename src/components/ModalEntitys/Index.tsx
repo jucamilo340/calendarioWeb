@@ -55,7 +55,7 @@ export const Options = ({ open, onClose }: Props) => {
             sx={{ display: 'flex', alignItems: 'center', my: 2 }}
             onClick={() => setPanel('grupo')}
           >
-            <GroupsIcon sx={{ fontSize: 48 }} />
+            <GroupsIcon sx={{ fontSize: 48 }} color='info' />
             <Typography variant="h6" sx={{ ml: 2 }}>
               Grupo
             </Typography>
