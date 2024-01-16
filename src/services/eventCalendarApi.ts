@@ -12,6 +12,7 @@ interface ICreateEventCalendar {
     end: string;
     start: string;
     profesor: string;
+    grupo: string;
     materia: string,
     salon: string;
     backgroundColor: string;
@@ -28,9 +29,13 @@ export const createEventCalendar = async (data: ICreateEventCalendar) => {
   }
 };
 
-export const getAllEventsCalendar = async () => {
+export const getAllEventsCalendar = async (grupoId:string) => {
   try {
-    const response = await api.get(GET_ALL_EVENTS_CALENDAR);
+    const params: Record<string, string> = {};
+    if (grupoId) {
+      params.grupoId = grupoId;
+    }
+    const response = await api.get(GET_ALL_EVENTS_CALENDAR,{ params });
     return response.data;
   } catch (err) {
     return err;

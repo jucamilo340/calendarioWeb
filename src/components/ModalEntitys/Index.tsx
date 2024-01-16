@@ -4,6 +4,7 @@ import { Modal, Box, Typography, IconButton } from '@mui/material';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import GroupsIcon from '@mui/icons-material/Groups';
 import CrudPanel from './CrudEntity';
 
 type Props = {
@@ -50,6 +51,15 @@ export const Options = ({ open, onClose }: Props) => {
           <Typography variant="h4" align="center" gutterBottom>
             Selecciona una Entidad
           </Typography>
+          <IconButton
+            sx={{ display: 'flex', alignItems: 'center', my: 2 }}
+            onClick={() => setPanel('grupo')}
+          >
+            <GroupsIcon sx={{ fontSize: 48 }} />
+            <Typography variant="h6" sx={{ ml: 2 }}>
+              Grupo
+            </Typography>
+          </IconButton>
           <IconButton
             sx={{ display: 'flex', alignItems: 'center', my: 2 }}
             onClick={() => setPanel('profesor')}

@@ -142,9 +142,9 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues = {}, onSubmit })
           </Select>
         </FormControl>
 
-        <Button variant="outlined" onClick={handleOpen} sx={{ mb: 2 }}>
+        {/* <Button variant="outlined" onClick={handleOpen} sx={{ mb: 2 }}>
           Abrir disponibilidad Horaria
-        </Button>
+        </Button> */}
 
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Seleccionar Horarios</DialogTitle>

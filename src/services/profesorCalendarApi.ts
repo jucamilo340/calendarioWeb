@@ -49,7 +49,7 @@ export const getProfesor = async ({ id }: IGetProfesor) => {
   }
 };
 
-export const getAllProfesores = async (materiaId?: string, horario?: string) => {
+export const getAllProfesores = async ({ materiaId, horario }: { materiaId?: string, horario?: any } = {}) => {
   try {
     const params: Record<string, string> = {};
     if (materiaId) {

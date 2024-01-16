@@ -32,13 +32,13 @@ const SalonesList: React.FC = () => {
     _id: string;
     nombre: string;
     capacidad: number;
-    disponibilidad: RangoHorario[];
+    ocupacion: RangoHorario[];
   }
 
   const initialValues = {
     nombre: '',
     capacidad: 0,
-    disponibilidad: [{ dia: '', inicio: '', fin: '' }],
+    // disponibilidad: [{ dia: '', inicio: '', fin: '' }],
   };
 
   const [salones, setSalones] = useState<Salon[]>([]);
@@ -95,6 +95,7 @@ const SalonesList: React.FC = () => {
               <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Capacidad</TableCell>
+              <TableCell>Horario</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -104,6 +105,13 @@ const SalonesList: React.FC = () => {
                 <TableCell>{salon._id}</TableCell>
                 <TableCell>{salon.nombre}</TableCell>
                 <TableCell>{salon.capacidad}</TableCell>
+                <TableCell>
+    {salon.ocupacion.map((dis: any) => (
+      <>
+      <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br/>
+      </>
+    ))}
+    </TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(salon)} color="primary">
                     Editar

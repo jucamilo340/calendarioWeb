@@ -2,6 +2,7 @@ import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/do
 import { ServerStyleSheet } from 'styled-components';
 import { ServerStyleSheets } from '@material-ui/styles';
 
+
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext): Promise<any> {
     const sheet = new ServerStyleSheet();

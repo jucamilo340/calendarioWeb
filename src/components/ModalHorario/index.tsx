@@ -12,6 +12,7 @@ import {
   IconButton,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Horarios, convertirRangoHorario } from '../../constants/metodos';
 
 interface Horario {
   dia: string;
@@ -51,7 +52,6 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           fin: horaFinSeleccionada,
         },
       ]);
-
       setDiaSeleccionado('');
       setHoraInicioSeleccionada('');
       setHoraFinSeleccionada('');
@@ -71,11 +71,11 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
       <FormControl fullWidth>
         <InputLabel>Día</InputLabel>
         <Select label="Día" value={diaSeleccionado} onChange={handleDiaSeleccionado}>
-          <MenuItem value="Lunes">Lunes</MenuItem>
-          <MenuItem value="Martes">Martes</MenuItem>
-          <MenuItem value="Miércoles">Miércoles</MenuItem>
-          <MenuItem value="Jueves">Jueves</MenuItem>
-          <MenuItem value="Viernes">Viernes</MenuItem>
+          <MenuItem value="lunes">Lunes</MenuItem>
+          <MenuItem value="martes">Martes</MenuItem>
+          <MenuItem value="miercoles">Miércoles</MenuItem>
+          <MenuItem value="jueves">Jueves</MenuItem>
+          <MenuItem value="viernes">Viernes</MenuItem>
         </Select>
       </FormControl>
 
@@ -86,8 +86,9 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           value={horaInicioSeleccionada}
           onChange={handleHoraInicioSeleccionada}
         >
-          <MenuItem value="08:00">08:00</MenuItem>
-          <MenuItem value="09:00">09:00</MenuItem>
+          {Horarios.map((h)=> (
+            <MenuItem key={h} value={h}>{h}</MenuItem>
+          ))}
         </Select>
       </FormControl>
 
@@ -98,10 +99,12 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           value={horaFinSeleccionada}
           onChange={handleHoraFinSeleccionada}
         >
-          <MenuItem value="10:00">10:00</MenuItem>
-          <MenuItem value="11:00">11:00</MenuItem>
+          {Horarios.map((h)=> (
+            <MenuItem key={h} value={h}>{h}</MenuItem>
+          ))}
         </Select>
       </FormControl>
+
 
       <Button variant="contained" onClick={handleAgregarHorario} sx={{ mt: 2 }}>
         Agregar Horario

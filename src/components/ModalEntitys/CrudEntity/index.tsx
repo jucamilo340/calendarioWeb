@@ -2,6 +2,7 @@
 import FormProfesor from './profesor';
 import FormMateria from './Materia';
 import FormSalon from './Salon';
+import FormGrupo from './Grupo';
 const CrudPanel = (props :any) => {
     return (
            props.entidad === 'profesor' ?
@@ -12,6 +13,9 @@ const CrudPanel = (props :any) => {
            :
            props.entidad === 'salon' ?
            <FormSalon/>
+           :
+           props.entidad === 'grupo' ?
+           <FormGrupo/>
            :
            <></>
     )

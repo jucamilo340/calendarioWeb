@@ -6,6 +6,7 @@ export interface IEventCalendar {
   start: string;
   profesor: any;
   materia: any;
+  grupo:any
   salon: any;
   user: string;
 }

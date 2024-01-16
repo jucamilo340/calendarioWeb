@@ -16,7 +16,11 @@ export const GET_SALON_ALL = `/api/salon/all`;
 export const UPDATE_SALON = `/api/salon`;
 export const DELETE_SALON = (id:string) => `/api/salon/${id}`;
 
-
+export const CREATE_GRUPO = `/api/grupo`;
+export const GET_GRUPO = (id: string) => `/api/grupo/${id}`;
+export const GET_GRUPO_ALL = `/api/grupo/all`;
+export const UPDATE_GRUPO = `/api/grupo`;
+export const DELETE_GRUPO = (id: string) => `/api/grupo/${id}`;
 
 export const CREATE_EVENT_CALENDAR = 'api/eventCalendar';
 export const GET_EVENT_CALENDAR = (id: string) => `api/eventCalendar/${id}`;

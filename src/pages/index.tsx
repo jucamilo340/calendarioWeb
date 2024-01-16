@@ -1,20 +1,41 @@
 import { Button, Typography } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarScheduler } from "../components/CalendarScheduler";
 import { Options } from "../components/ModalEntitys/Index";
 import { mapArrayEventCalendar } from "../domain/EventCalendar";
 import { getAllEventsCalendar } from "../services/eventCalendarApi";
 import { ContainerMain } from "../styles/Home";
+import { useGroupContext } from "../hooks/GroupContext";
+import { getAllGrupos } from "../services/grupoApi";
 
 interface IHomeProps {
   listAllEventsCalendar: any;
 }
 
 const Home = ({ listAllEventsCalendar }: IHomeProps) => {
-  const [listEventsCalendar, setListEventsCalendar] = useState<any[]>(listAllEventsCalendar);
+  const [listEventsCalendar, setListEventsCalendar] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const { selectedGroup } = useGroupContext();
+
+  const getEvents = async (grupoId:string) => {
+       const eventsCalendar = await getAllEventsCalendar(grupoId);
+       const listAllEventsCalendar = mapArrayEventCalendar(eventsCalendar);
+       setListEventsCalendar(listAllEventsCalendar);
+  };
+  const getGrupos = async () => {
+    const gruposAll = await getAllGrupos();
+    getEvents(gruposAll[0]._id);;
+  };
+  useEffect(() => {
+    if(Object.keys(selectedGroup).length === 0){
+      getGrupos();
+    }else{
+      getEvents(selectedGroup._id);
+    }
+  }, [selectedGroup]);
+  
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -44,15 +65,15 @@ const Home = ({ listAllEventsCalendar }: IHomeProps) => {
 };
 
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const eventsCalendar = await getAllEventsCalendar();
-  const listAllEventsCalendar = mapArrayEventCalendar(eventsCalendar);
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const eventsCalendar = await getAllEventsCalendar();
+//   const listAllEventsCalendar = mapArrayEventCalendar(eventsCalendar);
 
-  return {
-    props: {
-      listAllEventsCalendar: listAllEventsCalendar ?? [],
-    },
-  };
-};
+//   return {
+//     props: {
+//       listAllEventsCalendar: listAllEventsCalendar ?? [],
+//     },
+//   };
+// };
 
 export default Home;

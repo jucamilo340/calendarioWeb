@@ -35,9 +35,13 @@ export const getSalon = async (id: string) => {
   }
 };
 
-export const getAllSalones = async () => {
+export const getAllSalones = async (horario:any) => {
   try {
-    const response = await api.get(GET_SALON_ALL);
+    const params: Record<string, string> = {};
+    if (horario) {
+      params.horario = horario;
+    }
+    const response = await api.get(GET_SALON_ALL, { params });
     return response.data;
   } catch (err) {
     return err;

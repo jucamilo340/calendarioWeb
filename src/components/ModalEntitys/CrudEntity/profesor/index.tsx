@@ -25,7 +25,7 @@ const ProfesoresList: React.FC = () => {
   interface Profesor {
     _id: string;
     nombre: string;
-    disponibilidad: string[];
+    ocupacion: string[];
   }
 
   const initialValues = {
@@ -93,7 +93,7 @@ const ProfesoresList: React.FC = () => {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
-              <TableCell>Disponibilidad</TableCell>
+              <TableCell>Horarios</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -103,7 +103,7 @@ const ProfesoresList: React.FC = () => {
     <TableCell>{profesor._id}</TableCell>
     <TableCell>{profesor.nombre}</TableCell>
     <TableCell>
-    {profesor.disponibilidad.map((dis: any) => (
+    {profesor.ocupacion.map((dis: any) => (
       <>
       <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br/>
       </>

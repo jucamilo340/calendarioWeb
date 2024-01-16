@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { CalendarApi } from '@fullcalendar/react';
 import {
   Button,
@@ -10,6 +10,7 @@ import {
   Select,
   TextField,
 } from '@mui/material';
+import moment from 'moment';
 import {
   createEventCalendar,
   deleteEventCalendar,
@@ -20,7 +21,7 @@ import { getAllSalones } from '../../services/salonesApi';
 import { getAllMaterias } from '../../services/materiasApi';
 import { ColorsCard, ListColorsCard } from '../../constants/ListColorsCard';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
-import { ContactlessOutlined } from '@mui/icons-material';
+import { useGroupContext } from '../../hooks/GroupContext';
 
 interface ICardColor {
   backgroundColor: string;
@@ -55,6 +56,10 @@ export const ModalInfosEventCalendar = ({
 
   const [salones, setSalones] = useState([]);
   const [selectSalon, setSelectSalon] = useState<any>('');
+  const { selectedGroup } = useGroupContext();
+
+  const inicioT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
+  const finT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
 
   useEffect(() => {
     getSalones();
@@ -91,7 +96,8 @@ export const ModalInfosEventCalendar = ({
   };
 
   const getProfesores = async (materia: any) => {
-    const profesoresAll = await getAllProfesores(materia._id);
+    const profesoresAll = await getAllProfesores({ materiaId: materia._id, horario: {inicio: inicioT,
+      fin: finT}});
     setProfesores(profesoresAll);
     if (isEditCard) {
       const profesor = profesoresAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.profesor._id);
@@ -100,7 +106,8 @@ export const ModalInfosEventCalendar = ({
   };
 
   const getSalones = async () => {
-    const salonesAll = await getAllSalones();
+    const salonesAll = await getAllSalones({inicio: inicioT,
+      fin: finT});
     setSalones(salonesAll);
     if (isEditCard) {
       const salon = salonesAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.salon._id);
@@ -112,16 +119,18 @@ export const ModalInfosEventCalendar = ({
     try {
       const calendarApi: CalendarApi = eventInfos.view.calendar;
 
+      const nuevaHoraFinal= moment(inicioT).add(selectMateria?.horas, 'hours').format("YYYY-MM-DDTHH:mm:ssZ");
       const eventCalendar = await createEventCalendar({
         eventCalendar: {
           title: title === '' ? 'Sin título' : title,
           start: eventInfos.startStr,
-          end: eventInfos.endStr,
+          end: nuevaHoraFinal,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
           profesor: selectProfesor._id,
           materia: selectMateria._id,
           salon: selectSalon._id,
+          grupo: selectedGroup._id,
         },
       });
 
@@ -129,7 +138,7 @@ export const ModalInfosEventCalendar = ({
         id: eventCalendar._id,
         title: eventCalendar.title,
         start: eventCalendar.start,
-        end: eventCalendar.endStr,
+        end: nuevaHoraFinal,
         backgroundColor: cardColor.backgroundColor,
         textColor: cardColor.textColor,
         profesor: selectProfesor,
@@ -143,7 +152,7 @@ export const ModalInfosEventCalendar = ({
       handleClose();
     }
   };
-
+  console.log(eventInfos?.event?.startStr);
   const handleDeleteEvent = async () => {
     try {
       await deleteEventCalendar({ id: eventInfos.event.id });
@@ -159,13 +168,13 @@ export const ModalInfosEventCalendar = ({
   const handleUpdatedEvent = async () => {
     try {
       const calendarApi: CalendarApi = eventInfos.view.calendar;
-
+      const nuevaHoraFinal= moment(inicioT).add(selectMateria?.horas, 'hours').format("YYYY-MM-DDTHH:mm:ssZ");
       const eventCalendarUpdated = {
         eventCalendar: {
           _id: eventInfos.event.id,
           title: 'Sin título',
           start: eventInfos.event.startStr,
-          end: eventInfos.event.endStr,
+          end: nuevaHoraFinal,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
           profesor: selectProfesor._id,
@@ -180,12 +189,14 @@ export const ModalInfosEventCalendar = ({
         currentEvent.setProp('title', title !== '' ? title : 'Sin título');
         currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
         currentEvent.setProp('textColor', cardColor.textColor);
+        currentEvent.setProp('end', nuevaHoraFinal);
         currentEvent.setExtendedProp('profesor', selectProfesor);
         currentEvent.setExtendedProp('materia', selectMateria);
         currentEvent.setExtendedProp('salon', selectSalon);
       }
 
       await updateEventCalendar(eventCalendarUpdated);
+      toast.error('Hubo un error al actualizar la clase');
     } catch (error) {
       toast.error('Hubo un error al actualizar la clase');
     } finally {
@@ -193,6 +204,8 @@ export const ModalInfosEventCalendar = ({
       handleClose();
     }
   };
+
+  
 
   return (
     <Modal open={open} onClose={handleClose}>
