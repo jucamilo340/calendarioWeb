@@ -4,26 +4,40 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { ModalInfosEventCalendar } from "./ModalInfosEventCalendar";
 import { useDisclosure } from "../hooks/useDiscloure";
-import { useEffect, useState } from "react";
+import adaptivePlugin from '@fullcalendar/adaptive'
+import { useEffect, useRef, useState } from "react";
 import { ContainerCalendar } from "./styles";
-import { updateEventCalendar } from "../services/eventCalendarApi";
-import { toast } from "react-toastify";
+import { deleteAllEventCalendar, generarHorario, updateDateEventCalendar, updateEventCalendar } from "../services/eventCalendarApi";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { IEventCalendar } from "../domain/EventCalendar";
 import { useGroupContext } from "../hooks/GroupContext";
 import { getAllGrupos } from "../services/grupoApi";
-import { Box, MenuItem, Select } from "@mui/material";
+import { Box, MenuItem, Select, Button, Typography } from "@mui/material";
+import { CircularProgress, Backdrop } from '@mui/material';
+import { styled } from '@mui/system';
+import { numeroAOrdinal } from "../constants/metodos";
+
+const MyBackdrop = styled(Backdrop)({
+  zIndex: 10,
+  color: '#fff',
+});
+
 
 type CalendarSchedulerProps = {
   eventsCalendar: IEventCalendar[];
 }
 
+
 export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   const [eventInfos, setEventInfos] = useState();
   const [isEditCard, setIsEditCard] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [grupos, setGrupos] = useState([]);
-  const { selectedGroup, setGlobalGroup } = useGroupContext();
+  const calendarRef = useRef(null);
+  const { selectedGroup, setGlobalGroup, fetchData, setfetchData } = useGroupContext();
   useEffect(() => {
-  }, [selectedGroup]);  
+  }, []);  
 
   const weekends = {
     weekendsVisible: true,
@@ -58,9 +72,40 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         },
       };
 
-      await updateEventCalendar(eventCalendarUpdated);
+      await updateDateEventCalendar(eventCalendarUpdated);
     } catch (err) {
       toast.error('Hubo un error al actualizar la Clase');
+    }
+  };
+
+  const generarHorarioEventos = async () => {
+    setLoading(true);
+    try {
+      await generarHorario(selectedGroup?._id);
+      setfetchData(!fetchData);
+      toast.success("Horario generado Exitosamente !", {
+        position: "top-center"
+      });
+    } catch (error) {
+      toast.error('Hubo un error al generar el horario',{
+        position: "top-center"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const eliminarHorarioEventos = async () => {
+    try {
+      await deleteAllEventCalendar(selectedGroup?._id);
+      setfetchData(!fetchData);
+      toast.success("Horario Eliminado Exitosamente", {
+        position: "top-center"
+      });
+    } catch (error) {
+      toast.error('Hubo un error al eliminar el horario',{
+        position: "top-center"
+      });
     }
   };
 
@@ -69,7 +114,18 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     setGlobalGroup(gruposAll[0]);
     setGrupos(gruposAll);
   };
+  const handlePrintCalendar = (cmpName) => {
+    var docHead = document.head.outerHTML;
+    var printContents = document?.getElementById('component1').outerHTML;
+    var winAttr = "location=yes, statusbar=no, menubar=no, titlebar=no, toolbar=no,dependent=no, width=865, height=600, resizable=yes, screenX=200, screenY=200, personalbar=no, scrollbars=yes";
 
+    var newWin = window.open("", "_blank", winAttr);
+    var writeDoc = newWin.document;
+    writeDoc.open();
+    writeDoc.write('<!doctype html><html> <style>.fc-header-toolbar{display :none !important;} .fc-scroller.fc-scroller-liquid{overflow:visible !important;} .fc-view-harness.fc-view-harness-active{height:auto !important;}</style>' + docHead + '<body onLoad="window.print()">' + printContents + '</body></html>');
+    writeDoc.close();
+    newWin.focus();
+  };
   const now = new Date();
 
   const eventDisplay = (info:any) => {
@@ -91,12 +147,18 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
 
   useEffect(() => {
       getGrupos();
-  }, [])
-  
-  
+  }, []);
+
 
   return (
   <ContainerCalendar>
+        <MyBackdrop open={loading}>
+        <Typography variant="h4" sx={{color: "white", marginRight:'10px'}}> Generando Horario</Typography> 
+        <CircularProgress color="success" />
+      </MyBackdrop>
+      <div>
+        <ToastContainer />
+      </div>
       <ModalInfosEventCalendar
         open={modalInfosEvent.isOpen}
         handleClose={modalInfosEvent.handleClose}
@@ -117,15 +179,26 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
               >
                 {grupos.map((grupo: any) => (
                   <MenuItem key={grupo._id} value={grupo}>
-                    {grupo.nombre} semestre {grupo.semestre} {grupo.diurno ? 'Diurno':'Nocturno'}
+                    {grupo.nombre} {numeroAOrdinal(grupo.semestre)} semestre {grupo.diurno ? 'Diurno':'Nocturno'}
                   </MenuItem>
                 ))}
             </Select>
         </Box>
+        <Button onClick={()=> generarHorarioEventos()} sx={{marginLeft: '50px'}} variant="contained" color="success">
+          Generar Calendario
+        </Button>
+        <Button onClick={()=> eliminarHorarioEventos()} sx={{marginLeft: '50px'}} variant="contained" color="error">
+          Eliminar Horario
+        </Button>
+        <Button onClick={()=>handlePrintCalendar('component1')} sx={{marginLeft: '50px'}} variant="contained" color="primary">
+          Imprimir Horario
+        </Button>
       </Box>
+    <Box id="component1" sx={{width: '100%', height: '100%'}}>
     <FullCalendar
-      plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+      plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin, adaptivePlugin]}
       initialView="timeGridWeek"
+      ref={calendarRef}
       initialDate = '2018-01-12'
       headerToolbar={{
         // left: "prev,next today",
@@ -164,6 +237,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       }}
       eventContent= {eventDisplay}
     />
+    </Box>
   </ContainerCalendar>
   );
 };

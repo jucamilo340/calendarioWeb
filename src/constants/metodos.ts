@@ -4,3 +4,13 @@ export const Horarios: string[] = [
     "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"
   ];
   
+
+  export function numeroAOrdinal(numero: number): string {
+    const ordinales = ['primer', 'segundo', 'tercer', 'cuarto', 'quinto', 'sexto', 'séptimo', 'octavo', 'noveno', 'décimo'];
+  
+    if (numero >= 1 && numero <= 10) {
+      return ordinales[numero - 1];
+    } else {
+      return 'Número no admitido';
+    }
+  }

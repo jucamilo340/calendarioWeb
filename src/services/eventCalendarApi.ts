@@ -4,6 +4,9 @@ import {
   DELETE_EVENT_CALENDAR,
   GET_ALL_EVENTS_CALENDAR,
   UPDATE_EVENT_CALENDAR,
+  GENERATE_EVENT_CALENDAR,
+  DELETE_ALL_EVENT_CALENDAR,
+  UPDATE_DATE_EVENT_CALENDAR
 } from './Routes';
 
 interface ICreateEventCalendar {
@@ -56,9 +59,29 @@ interface IUpdateEventCalendar {
   };
 }
 
+interface IUpdateDateEventCalendar {
+  eventCalendar: {
+    _id: string;
+    title: string;
+    end: string;
+    start: string;
+    backgroundColor: string;
+    textColor: string;
+  };
+}
+
 export const updateEventCalendar = async (data: IUpdateEventCalendar) => {
   try {
     const response = await api.put(UPDATE_EVENT_CALENDAR, data);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const updateDateEventCalendar = async (data: IUpdateDateEventCalendar) => {
+  try {
+    const response = await api.put(UPDATE_DATE_EVENT_CALENDAR, data);
     return response.data;
   } catch (err) {
     return err;
@@ -72,6 +95,24 @@ interface IDeleteEventCalendar {
 export const deleteEventCalendar = async ({ id }: IDeleteEventCalendar) => {
   try {
     const response = await api.delete(DELETE_EVENT_CALENDAR(id));
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const deleteAllEventCalendar = async (id:string) => {
+  try {
+    const response = await api.delete(DELETE_ALL_EVENT_CALENDAR(id));
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const generarHorario = async (id:string) => {
+  try {
+    const response = await api.post(GENERATE_EVENT_CALENDAR(id));
     return response.data;
   } catch (err) {
     return err;

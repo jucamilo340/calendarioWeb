@@ -3,19 +3,26 @@ import React, { createContext, useContext, useState } from 'react';
 interface GroupContextProps {
   selectedGroup: any;
   setGlobalGroup: (newGroup: any) => void;
+  fetchData: any;
+  setfetchData: (newGroup: any) => void;
 }
 
 const GroupContext = createContext<GroupContextProps | undefined>(undefined);
 
 export const GroupProvider: React.FC = ({ children }) => {
   const [selectedGroup, setSelectedGroup] = useState<any>({});
+  const [fetchData, setfetch] = useState<any>(false);
 
   const setGlobalGroup = (newGroup: any) => {
     setSelectedGroup(newGroup);
   };
 
+  const setfetchData = (newGroup: any) => {
+    setfetch(newGroup);
+  };
+
   return (
-    <GroupContext.Provider value={{ selectedGroup, setGlobalGroup }}>
+    <GroupContext.Provider value={{ selectedGroup, setGlobalGroup, fetchData, setfetchData }}>
       {children}
     </GroupContext.Provider>
   );

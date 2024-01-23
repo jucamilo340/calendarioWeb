@@ -26,6 +26,7 @@ const MateriasList: React.FC = () => {
     _id: string;
     nombre: string;
     horas: number;
+    horasSemanales: number;
     credits: number;
   }
 
@@ -89,6 +90,7 @@ const MateriasList: React.FC = () => {
               <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Horas</TableCell>
+              <TableCell>Horas Semanales</TableCell>
               <TableCell>Créditos</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -99,6 +101,7 @@ const MateriasList: React.FC = () => {
                 <TableCell>{materia._id}</TableCell>
                 <TableCell>{materia.nombre}</TableCell>
                 <TableCell>{materia.horas}</TableCell>
+                <TableCell>{materia.horasSemanales}</TableCell>
                 <TableCell>{materia.credits}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(materia)} color="primary">

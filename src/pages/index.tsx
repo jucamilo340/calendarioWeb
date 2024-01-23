@@ -17,7 +17,7 @@ interface IHomeProps {
 const Home = ({ listAllEventsCalendar }: IHomeProps) => {
   const [listEventsCalendar, setListEventsCalendar] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState(false);
-  const { selectedGroup } = useGroupContext();
+  const { selectedGroup, fetchData } = useGroupContext();
 
   const getEvents = async (grupoId:string) => {
        const eventsCalendar = await getAllEventsCalendar(grupoId);
@@ -34,7 +34,7 @@ const Home = ({ listAllEventsCalendar }: IHomeProps) => {
     }else{
       getEvents(selectedGroup._id);
     }
-  }, [selectedGroup]);
+  }, [selectedGroup, fetchData]);
   
 
   const handleOpenModal = () => {

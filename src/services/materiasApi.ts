@@ -11,6 +11,7 @@ interface ICreateMateria {
   materia: {
     nombre: string;
     horas: number;
+    horasSemanales: number;
     credits: number;
   };
 }
@@ -47,6 +48,7 @@ interface IUpdateMateria {
     _id: string;
     nombre: string;
     horas: number;
+    horasSemanales: number;
     credits: number;
   };
 }

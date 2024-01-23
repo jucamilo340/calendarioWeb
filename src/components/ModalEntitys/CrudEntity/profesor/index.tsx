@@ -97,31 +97,37 @@ const ProfesoresList: React.FC = () => {
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-          {profesores.map((profesor) => (
-  <TableRow key={profesor._id}> {/* Cambia de profesor._id a profesor.id */}
-    <TableCell>{profesor._id}</TableCell>
-    <TableCell>{profesor.nombre}</TableCell>
-    <TableCell>
-    {profesor.ocupacion.map((dis: any) => (
-      <>
-      <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br/>
-      </>
-    ))}
-    </TableCell>
-    <TableCell>
-      <Button onClick={() => handleEdit(profesor)} color="primary">
-        Editar
-      </Button>
-      <Button onClick={() => handleDelete(profesor._id)} color="error">
-        Eliminar
-      </Button>
-    </TableCell>
-  </TableRow>
-))}
-          </TableBody>
         </Table>
       </TableContainer>
+      <div style={{ maxHeight: 400, overflow: 'auto' }}>
+        <TableContainer>
+          <Table>
+            <TableBody>
+              {profesores.map((profesor) => (
+                <TableRow key={profesor._id}>
+                  <TableCell>{profesor._id}</TableCell>
+                  <TableCell>{profesor.nombre}</TableCell>
+                  <TableCell>
+                    {profesor.ocupacion.map((dis: any) => (
+                      <>
+                        <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br />
+                      </>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleEdit(profesor)} color="primary">
+                      Editar
+                    </Button>
+                    <Button onClick={() => handleDelete(profesor._id)} color="error">
+                      Eliminar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
 
       <Button onClick={handleOpen} variant="contained" color="success" mt={2}>
         Nuevo Profesor

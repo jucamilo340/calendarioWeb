@@ -48,6 +48,18 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
 
         <TextField
           fullWidth
+          id="horasSemanales"
+          name="horasSemanales"
+          label="Horas Semanales"
+          type="number"
+          margin="normal"
+          variant="outlined"
+          value={formik.values.horasSemanales}
+          onChange={formik.handleChange}
+        />
+
+        <TextField
+          fullWidth
           id="credits"
           name="credits"
           label="Créditos"

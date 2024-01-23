@@ -49,7 +49,7 @@ export const getProfesor = async ({ id }: IGetProfesor) => {
   }
 };
 
-export const getAllProfesores = async ({ materiaId, horario }: { materiaId?: string, horario?: any } = {}) => {
+export const getAllProfesores = async ({ materiaId, horario, eventoId }: { materiaId?: string, horario?: any, eventoId?:string } = {}) => {
   try {
     const params: Record<string, string> = {};
     if (materiaId) {
@@ -57,6 +57,9 @@ export const getAllProfesores = async ({ materiaId, horario }: { materiaId?: str
     }
     if (horario) {
       params.horario = horario;
+    }
+    if (eventoId) {
+      params.eventoId = eventoId;
     }
 
     const response = await api.get(GET_PROFESOR_ALL, { params });

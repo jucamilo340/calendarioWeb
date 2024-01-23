@@ -58,6 +58,15 @@ export const ModalInfosEventCalendar = ({
   const [selectSalon, setSelectSalon] = useState<any>('');
   const { selectedGroup } = useGroupContext();
 
+  useEffect(() => {
+    setSalones([]);
+    setSelectSalon('');
+    setSelectProfesor('');
+    setProfesores([]);
+  }, [open])
+  
+  
+
   const inicioT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
   const finT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
 
@@ -91,13 +100,13 @@ export const ModalInfosEventCalendar = ({
     if (isEditCard) {
       const materia = materiasAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.materia._id);
       setSelectMateria(materia);
-      getProfesores(materia._id);
+      getProfesores(materia);
     }
   };
 
   const getProfesores = async (materia: any) => {
     const profesoresAll = await getAllProfesores({ materiaId: materia._id, horario: {inicio: inicioT,
-      fin: finT}});
+      fin: finT}, eventoId: eventInfos?.event?.id });
     setProfesores(profesoresAll);
     if (isEditCard) {
       const profesor = profesoresAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.profesor._id);
@@ -106,8 +115,8 @@ export const ModalInfosEventCalendar = ({
   };
 
   const getSalones = async () => {
-    const salonesAll = await getAllSalones({inicio: inicioT,
-      fin: finT});
+    const salonesAll = await getAllSalones({horario: {inicio: inicioT,
+      fin: finT}, eventoId: eventInfos?.event?.id });
     setSalones(salonesAll);
     if (isEditCard) {
       const salon = salonesAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.salon._id);
@@ -152,7 +161,6 @@ export const ModalInfosEventCalendar = ({
       handleClose();
     }
   };
-  console.log(eventInfos?.event?.startStr);
   const handleDeleteEvent = async () => {
     try {
       await deleteEventCalendar({ id: eventInfos.event.id });
@@ -194,7 +202,6 @@ export const ModalInfosEventCalendar = ({
         currentEvent.setExtendedProp('materia', selectMateria);
         currentEvent.setExtendedProp('salon', selectSalon);
       }
-
       await updateEventCalendar(eventCalendarUpdated);
       toast.error('Hubo un error al actualizar la clase');
     } catch (error) {

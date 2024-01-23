@@ -20,6 +20,7 @@ import {
   updateSalon,
   deleteSalon,
 } from '../../../../services/salonesApi';
+import { ToastContainer, toast } from 'react-toastify';
 
 const SalonesList: React.FC = () => {
   interface RangoHorario {
@@ -73,12 +74,21 @@ const SalonesList: React.FC = () => {
   };
 
   const handleSave = async (values: any) => {
-    if (selectedSalon) {
-      // Editar salón existente
-      await updateSalon({ salon: { _id: selectedSalon._id, ...values } });
-    } else {
-      // Crear nuevo salón
-      await createSalon({ salon: values });
+    try {
+      if (selectedSalon) {
+        // Editar salón existente
+        await updateSalon({ salon: { _id: selectedSalon._id, ...values } });
+      } else {
+        // Crear nuevo salón
+        await createSalon({ salon: values });
+      }
+      toast.success("Salon creado Exitosamente !", {
+        position: "top-center"
+      });
+    } catch (error) {
+      toast.error('Hubo un error al eliminar la clase',{
+        position: "top-center"
+      });
     }
 
     getSalones();
@@ -88,6 +98,9 @@ const SalonesList: React.FC = () => {
 
   return (
     <Box mt={4} mx="auto" p={3} bgcolor="background.paper" boxShadow={3} maxWidth={800}>
+      <div>
+        <ToastContainer />
+      </div>
       <TableContainer>
         <Table>
           <TableHead>
