@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   Box,
   Button,
@@ -25,18 +25,20 @@ const MateriasList: React.FC = () => {
   interface Materia {
     _id: string;
     nombre: string;
-    horas: number;
+    sesiones: number;
+    nivel: number;
     horasSemanales: number;
     credits: number;
   }
 
   const initialValues = {
     nombre: '',
-    horas: 0,
+    sesisones: 0,
     credits: 0,
   };
 
   const [materias, setMaterias] = useState<Materia[]>([]);
+  const [materiasPorNivel, setMateriasPorNivel] = useState<{ [key: number]: Materia[] }>({});
   const [selectedMateria, setSelectedMateria] = useState<Materia | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -57,6 +59,20 @@ const MateriasList: React.FC = () => {
     getMaterias();
   }, []);
 
+  useEffect(() => {
+    const sortedMaterias = [...materias].sort((a, b) => a.nivel - b.nivel);
+    const materiasOrganizadas: { [key: number]: Materia[] } = {};
+
+    sortedMaterias.forEach((materia) => {
+      if (!materiasOrganizadas[materia.nivel]) {
+        materiasOrganizadas[materia.nivel] = [];
+      }
+      materiasOrganizadas[materia.nivel].push(materia);
+    });
+
+    setMateriasPorNivel(materiasOrganizadas);
+  }, [materias]);
+
   const handleEdit = (materia: Materia) => {
     setSelectedMateria(materia);
     handleOpen();
@@ -69,10 +85,8 @@ const MateriasList: React.FC = () => {
 
   const handleSave = async (values: any) => {
     if (selectedMateria) {
-      // Editar materia existente
       await updateMateria({ materia: { _id: selectedMateria._id, ...values } });
     } else {
-      // Crear nueva materia
       await createMateria({ materia: values });
     }
 
@@ -89,29 +103,38 @@ const MateriasList: React.FC = () => {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
-              <TableCell>Horas</TableCell>
+              <TableCell>N# de Sesiones</TableCell>
               <TableCell>Horas Semanales</TableCell>
               <TableCell>Créditos</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {materias.map((materia) => (
-              <TableRow key={materia._id}>
-                <TableCell>{materia._id}</TableCell>
-                <TableCell>{materia.nombre}</TableCell>
-                <TableCell>{materia.horas}</TableCell>
-                <TableCell>{materia.horasSemanales}</TableCell>
-                <TableCell>{materia.credits}</TableCell>
-                <TableCell>
-                  <Button onClick={() => handleEdit(materia)} color="primary">
-                    Editar
-                  </Button>
-                  <Button onClick={() => handleDelete(materia._id)} color="error">
-                    Eliminar
-                  </Button>
-                </TableCell>
-              </TableRow>
+            {Object.keys(materiasPorNivel).map((nivel) => (
+              <Fragment key={nivel}>
+                <TableRow>
+                  <TableCell colSpan={6} style={{ textAlign: 'center' }}>
+                    Nivel {nivel}
+                  </TableCell>
+                </TableRow>
+                {materiasPorNivel[parseInt(nivel)].map((materia) => (
+                  <TableRow key={materia._id}>
+                    <TableCell>{materia._id}</TableCell>
+                    <TableCell>{materia.nombre}</TableCell>
+                    <TableCell>{materia.sesiones}</TableCell>
+                    <TableCell>{materia.horasSemanales}</TableCell>
+                    <TableCell>{materia.credits}</TableCell>
+                    <TableCell>
+                      <Button onClick={() => handleEdit(materia)} color="primary">
+                        Editar
+                      </Button>
+                      <Button onClick={() => handleDelete(materia._id)} color="error">
+                        Eliminar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </Fragment>
             ))}
           </TableBody>
         </Table>

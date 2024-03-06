@@ -25,12 +25,14 @@ const GrupoList: React.FC = () => {
     _id: string;
     nombre: string;
     semestre: number;
+    cantidad: number;
     diurno: boolean;
   }
 
   const initialValues = {
     nombre: '',
     semestre: 0,
+    cantidad: 0,
     diurno: false,
   };
 
@@ -99,6 +101,7 @@ const GrupoList: React.FC = () => {
               <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Semestre</TableCell>
+              <TableCell>Cantidad de Estudiantes</TableCell>
               <TableCell>Diurno</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -109,6 +112,7 @@ const GrupoList: React.FC = () => {
                 <TableCell>{grupo._id}</TableCell>
                 <TableCell>{grupo.nombre}</TableCell>
                 <TableCell>{grupo.semestre}</TableCell>
+                <TableCell>{grupo.cantidad}</TableCell>
                 <TableCell>{grupo.diurno ? 'Sí' : 'No'}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(grupo)} color="primary">

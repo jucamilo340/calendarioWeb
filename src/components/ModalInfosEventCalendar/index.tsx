@@ -127,11 +127,10 @@ export const ModalInfosEventCalendar = ({
   const handleAddedEvent = async () => {
     try {
       const calendarApi: CalendarApi = eventInfos.view.calendar;
-
       const nuevaHoraFinal= moment(inicioT).add(selectMateria?.horas, 'hours').format("YYYY-MM-DDTHH:mm:ssZ");
       const eventCalendar = await createEventCalendar({
         eventCalendar: {
-          title: title === '' ? 'Sin título' : title,
+          title: title === '' ? 'NaN' : title,
           start: eventInfos.startStr,
           end: nuevaHoraFinal,
           backgroundColor: cardColor.backgroundColor,
@@ -147,7 +146,7 @@ export const ModalInfosEventCalendar = ({
         id: eventCalendar._id,
         title: eventCalendar.title,
         start: eventCalendar.start,
-        end: nuevaHoraFinal,
+        end: eventCalendar.end,
         backgroundColor: cardColor.backgroundColor,
         textColor: cardColor.textColor,
         profesor: selectProfesor,
@@ -194,7 +193,7 @@ export const ModalInfosEventCalendar = ({
       const currentEvent = calendarApi.getEventById(eventInfos?.event?.id); 
 
       if (currentEvent) {
-        currentEvent.setProp('title', title !== '' ? title : 'Sin título');
+        currentEvent.setProp('title', title !== '' ? title : 'NaN');
         currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
         currentEvent.setProp('textColor', cardColor.textColor);
         currentEvent.setProp('end', nuevaHoraFinal);

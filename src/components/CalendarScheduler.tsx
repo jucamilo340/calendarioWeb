@@ -7,7 +7,7 @@ import { useDisclosure } from "../hooks/useDiscloure";
 import adaptivePlugin from '@fullcalendar/adaptive'
 import { useEffect, useRef, useState } from "react";
 import { ContainerCalendar } from "./styles";
-import { deleteAllEventCalendar, generarHorario, updateDateEventCalendar, updateEventCalendar } from "../services/eventCalendarApi";
+import { deleteAllEventCalendar, generarHorario, updateDateEventCalendar } from "../services/eventCalendarApi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IEventCalendar } from "../domain/EventCalendar";
@@ -17,6 +17,7 @@ import { Box, MenuItem, Select, Button, Typography } from "@mui/material";
 import { CircularProgress, Backdrop } from '@mui/material';
 import { styled } from '@mui/system';
 import { numeroAOrdinal } from "../constants/metodos";
+import  { ModalFiltro }  from "../components/ModalFiltro/index";
 
 const MyBackdrop = styled(Backdrop)({
   zIndex: 10,
@@ -31,6 +32,7 @@ type CalendarSchedulerProps = {
 
 export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   const [eventInfos, setEventInfos] = useState();
+  const [openModal, setOpenModal] = useState(false);
   const [isEditCard, setIsEditCard] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [grupos, setGrupos] = useState([]);
@@ -45,6 +47,14 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   };
 
   const modalInfosEvent = useDisclosure(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
 
   const handleAddEventSelectAndOpenModal = (selectInfo: any) => {
@@ -136,12 +146,19 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     const horasFormatoEnd = (endHour.getHours()).toString();
     const minutosFormatoEnd = endHour.getMinutes().toString().padStart(2, '0');
     return(
+      <div>
+        {info.event.title === 'NaN' ?
      <div>
         <span>{`${horasFormatoStart}:${minutosFormatoStart} - ${horasFormatoEnd}:${minutosFormatoEnd}`}</span><br/>
-        <span>Asignatura: {info?.event?._def?.extendedProps.materia.nombre}</span><br/>
-        <span>Profesor: {info?.event?._def?.extendedProps.profesor.nombre}</span><br/>
-        <span>Salon: {info?.event?._def?.extendedProps.salon.nombre}</span>
+        <span>Asignatura: {info?.event?._def?.extendedProps?.materia?.nombre}</span><br/>
+        <span>Profesor: {info?.event?._def?.extendedProps?.profesor?.nombre}</span><br/>
+        <span>Salon: {info?.event?._def?.extendedProps?.salon?.nombre}</span>
      </div>
+     :
+     <div>
+        <span>{info.event.title}</span><br/>
+     </div>}
+      </div>
     )
   }
 
@@ -149,6 +166,10 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       getGrupos();
   }, []);
 
+  const hasEventOnHour = (date: Date) => {
+    const dateString = date.toISOString();
+    return eventsCalendar.some(event => dateString >= event.start && dateString < event.end);
+  };
 
   return (
   <ContainerCalendar>
@@ -159,11 +180,11 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       <div>
         <ToastContainer />
       </div>
-      <ModalInfosEventCalendar
-        open={modalInfosEvent.isOpen}
-        handleClose={modalInfosEvent.handleClose}
-        eventInfos={eventInfos}
-        isEditCard={isEditCard}
+            <ModalInfosEventCalendar
+            open={modalInfosEvent.isOpen ? (!eventInfos?.event?.title ||eventInfos?.event?.title === 'NaN') : false}
+            handleClose={modalInfosEvent.handleClose}
+            eventInfos={eventInfos}
+            isEditCard={isEditCard}
       />
       <Box sx={{width: '100%', display:'flex', justifyContent: 'flex-start'}}>
         <Box>
@@ -179,7 +200,10 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
               >
                 {grupos.map((grupo: any) => (
                   <MenuItem key={grupo._id} value={grupo}>
-                    {grupo.nombre} {numeroAOrdinal(grupo.semestre)} semestre {grupo.diurno ? 'Diurno':'Nocturno'}
+                    Grupo:{grupo.nombre} -
+                    Nivel:{grupo.semestre} - 
+                    {/* {numeroAOrdinal(grupo.semestre)} semestre */}
+                    {grupo.diurno ? 'Diurno':'Nocturno'}
                   </MenuItem>
                 ))}
             </Select>
@@ -192,6 +216,9 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         </Button>
         <Button onClick={()=>handlePrintCalendar('component1')} sx={{marginLeft: '50px'}} variant="contained" color="primary">
           Imprimir Horario
+        </Button>
+        <Button onClick={()=>handleOpenModal()} sx={{marginLeft: '50px'}} variant="contained" color="primary">
+          Abrir Filtros
         </Button>
       </Box>
     <Box id="component1" sx={{width: '100%', height: '100%'}}>
@@ -228,6 +255,15 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       allDaySlot={false}
       editable={true}
       eventOverlap={false}
+      // slotLaneContent={({ date }) => {const isEventHour = hasEventOnHour(date);
+      //   const className = isEventHour ? '' : 'no-event-background';
+      //   return <div style={{height: '100%'}} className={className}></div>;
+      // }}
+      // slotLabelFormat={{
+      //   hour: 'numeric',
+      //   minute: '2-digit',
+      //   meridiem: 'short'
+      // }}
       height="700px"
       buttonText={{
         today: "Hoy",
@@ -237,6 +273,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       }}
       eventContent= {eventDisplay}
     />
+    <ModalFiltro open={openModal} onClose={handleCloseModal} />
     </Box>
   </ContainerCalendar>
   );

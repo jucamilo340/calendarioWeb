@@ -10,6 +10,7 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
+  TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Horarios, convertirRangoHorario } from '../../constants/metodos';
@@ -29,6 +30,7 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
   const [diaSeleccionado, setDiaSeleccionado] = useState<string>('');
   const [horaInicioSeleccionada, setHoraInicioSeleccionada] = useState<string>('');
   const [horaFinSeleccionada, setHoraFinSeleccionada] = useState<string>('');
+  const [nombreSeleccionado, setNombreSeleccionado] = useState<string>('');
 
   const handleDiaSeleccionado = (e: React.ChangeEvent<{ value: unknown }>) => {
     setDiaSeleccionado(e.target.value as string);
@@ -49,9 +51,11 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
         {
           dia: diaSeleccionado,
           inicio: horaInicioSeleccionada,
+          nombre: nombreSeleccionado === '' ? 'Ocupado' : nombreSeleccionado,
           fin: horaFinSeleccionada,
         },
       ]);
+      setNombreSeleccionado('');
       setDiaSeleccionado('');
       setHoraInicioSeleccionada('');
       setHoraFinSeleccionada('');
@@ -68,6 +72,14 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
 
   return (
     <div>
+      <TextField
+          id="nombre"
+          label="Nombre del evento"
+          fullWidth
+          sx={{ mb: 2 }}
+          value={nombreSeleccionado}
+          onChange={(e)=> setNombreSeleccionado(e.target.value)}
+        />
       <FormControl fullWidth>
         <InputLabel>Día</InputLabel>
         <Select label="Día" value={diaSeleccionado} onChange={handleDiaSeleccionado}>
@@ -116,7 +128,7 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           {horarios.map((horario, index) => (
             <ListItem key={index} disablePadding>
               <ListItemText
-                primary={`${horario.dia} - ${horario.inicio} a ${horario.fin}`}
+                primary={`${horario.nombre} | ${horario.dia} - ${horario.inicio} a ${horario.fin}`}
               />
               <ListItemSecondaryAction>
                 <IconButton

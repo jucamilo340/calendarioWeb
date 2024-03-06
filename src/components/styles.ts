@@ -7,4 +7,7 @@ export const ContainerCalendar = styled('div')`
       flex-direction: column;
     }
   }
+  .no-event-background {
+    background-color: lightblue; /* Color de fondo para horas sin eventos */
+  }
 `;

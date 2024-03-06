@@ -5,6 +5,8 @@ interface GroupContextProps {
   setGlobalGroup: (newGroup: any) => void;
   fetchData: any;
   setfetchData: (newGroup: any) => void;
+  filtros: any;
+  setfiltros: (newGroup: any) => void;
 }
 
 const GroupContext = createContext<GroupContextProps | undefined>(undefined);
@@ -12,6 +14,7 @@ const GroupContext = createContext<GroupContextProps | undefined>(undefined);
 export const GroupProvider: React.FC = ({ children }) => {
   const [selectedGroup, setSelectedGroup] = useState<any>({});
   const [fetchData, setfetch] = useState<any>(false);
+  const [filtros, setfiltros] = useState<any>({materia: '', profesor: '', salon: ''});
 
   const setGlobalGroup = (newGroup: any) => {
     setSelectedGroup(newGroup);
@@ -22,7 +25,7 @@ export const GroupProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <GroupContext.Provider value={{ selectedGroup, setGlobalGroup, fetchData, setfetchData }}>
+    <GroupContext.Provider value={{ selectedGroup, setGlobalGroup, fetchData, setfetchData, filtros, setfiltros }}>
       {children}
     </GroupContext.Provider>
   );

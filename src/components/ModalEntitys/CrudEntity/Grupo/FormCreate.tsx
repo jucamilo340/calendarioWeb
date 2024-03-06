@@ -29,8 +29,19 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           onChange={formik.handleChange}
         />
 
+        <TextField
+          fullWidth
+          id="cantidad"
+          name="cantidad"
+          label="Cantidad de Estudiantes"
+          margin="normal"
+          variant="outlined"
+          value={formik.values.cantidad}
+          onChange={formik.handleChange}
+        />
+
         <FormControl fullWidth variant="outlined" margin="normal">
-          <InputLabel id="semestre-label">Semestre</InputLabel>
+          <InputLabel id="semestre-label">Semestre/Nivel</InputLabel>
           <Select
             labelId="semestre-label"
             id="semestre"
@@ -42,6 +53,14 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
             <MenuItem value={1}>1</MenuItem>
             <MenuItem value={2}>2</MenuItem>
             <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={7}>7</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+            <MenuItem value={9}>9</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
             {/* Add more semestre options as needed */}
           </Select>
         </FormControl>

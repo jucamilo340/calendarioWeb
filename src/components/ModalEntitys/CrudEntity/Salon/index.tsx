@@ -32,6 +32,7 @@ const SalonesList: React.FC = () => {
   interface Salon {
     _id: string;
     nombre: string;
+    tipo: string;
     capacidad: number;
     ocupacion: RangoHorario[];
   }
@@ -39,6 +40,8 @@ const SalonesList: React.FC = () => {
   const initialValues = {
     nombre: '',
     capacidad: 0,
+    tipo: '',
+    facultad: '',
     // disponibilidad: [{ dia: '', inicio: '', fin: '' }],
   };
 
@@ -109,6 +112,7 @@ const SalonesList: React.FC = () => {
               <TableCell>Nombre</TableCell>
               <TableCell>Capacidad</TableCell>
               <TableCell>Horario</TableCell>
+              <TableCell>Tipo</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -117,6 +121,7 @@ const SalonesList: React.FC = () => {
               <TableRow key={salon._id}>
                 <TableCell>{salon._id}</TableCell>
                 <TableCell>{salon.nombre}</TableCell>
+                <TableCell>{salon.tipo}</TableCell>
                 <TableCell>{salon.capacidad}</TableCell>
                 <TableCell>
     {salon.ocupacion.map((dis: any) => (

@@ -3,6 +3,10 @@ import { useFormik } from 'formik';
 import {
   Box,
   Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -36,13 +40,13 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
 
         <TextField
           fullWidth
-          id="horas"
-          name="horas"
-          label="Horas"
+          id="sesiones"
+          name="sesiones"
+          label="N# de sesiones"
           type="number"
           margin="normal"
           variant="outlined"
-          value={formik.values.horas}
+          value={formik.values.sesiones}
           onChange={formik.handleChange}
         />
 
@@ -58,6 +62,23 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           onChange={formik.handleChange}
         />
 
+        <FormControl fullWidth>
+        <InputLabel>Nivel/Semestre</InputLabel>
+          <Select  id="nivel" name="nivel" label="Tipo de Contrato" value={formik.values.nivel} onChange={formik.handleChange} onBlur={formik.handleBlur}>
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+          </Select>
+        </FormControl>
+
         <TextField
           fullWidth
           id="credits"
@@ -69,6 +90,14 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           value={formik.values.credits}
           onChange={formik.handleChange}
         />
+
+        <FormControl fullWidth>
+          <InputLabel>Tipo</InputLabel>
+          <Select  id="tipo" name="tipo" label="Tipo de Asignatura" value={formik.values.tipo} onChange={formik.handleChange} onBlur={formik.handleBlur}>
+              <MenuItem value="carrera">Carrera</MenuItem>
+              <MenuItem value="electiva">Electiva</MenuItem>
+          </Select>
+        </FormControl>
 
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary">

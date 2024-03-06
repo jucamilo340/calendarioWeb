@@ -37,6 +37,7 @@ const ProfesoresList: React.FC = () => {
     materias: [],
     disponibilidad: [],
     salario: '',
+    tipo: '',
     auxiliar: false,
   };
 
@@ -85,16 +86,29 @@ const ProfesoresList: React.FC = () => {
     handleClose();
   };
 
+  console.log(profesores);
+
+  const getColorClass = (horasAsignadas, tipoProfesor) => {
+    if (
+      (tipoProfesor === 'catedratico' && (horasAsignadas < 8 || horasAsignadas > 16)) ||
+      ((tipoProfesor === 'carrera' || tipoProfesor === "contrato") && (horasAsignadas < 12 || horasAsignadas > 16))
+    ) {
+      return 'red';
+    }
+    return 'green';
+  };
+
   return (
     <Box mt={4} mx="auto" p={3} bgcolor="background.paper" boxShadow={3} maxWidth={800}>
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Horarios</TableCell>
-              <TableCell>Acciones</TableCell>
+              <TableCell style={{width: '20%'}}>ID</TableCell>
+              <TableCell style={{width: '20%'}}>Nombre</TableCell>
+              <TableCell style={{width: '20%'}}>Horas Asignadas</TableCell>
+              <TableCell style={{width: '20%'}}>Horarios</TableCell>
+              <TableCell style={{width: '20%'}}>Acciones</TableCell>
             </TableRow>
           </TableHead>
         </Table>
@@ -105,16 +119,17 @@ const ProfesoresList: React.FC = () => {
             <TableBody>
               {profesores.map((profesor) => (
                 <TableRow key={profesor._id}>
-                  <TableCell>{profesor._id}</TableCell>
-                  <TableCell>{profesor.nombre}</TableCell>
-                  <TableCell>
+                  <TableCell style={{width: '20%'}}>{profesor._id}</TableCell>
+                  <TableCell style={{width: '20%'}}>{profesor.nombre}</TableCell>
+                  <TableCell style={{width: '20%', fontWeight: 'bold', fontSize: '20px', color: getColorClass(profesor.horasAsignadas, profesor.tipo) }}>{profesor.horasAsignadas}</TableCell>
+                  <TableCell style={{width: '20%'}}>
                     {profesor.ocupacion.map((dis: any) => (
                       <>
                         <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br />
                       </>
                     ))}
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{width: '20%'}}>
                     <Button onClick={() => handleEdit(profesor)} color="primary">
                       Editar
                     </Button>

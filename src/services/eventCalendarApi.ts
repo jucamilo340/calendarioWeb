@@ -32,11 +32,14 @@ export const createEventCalendar = async (data: ICreateEventCalendar) => {
   }
 };
 
-export const getAllEventsCalendar = async (grupoId:string) => {
+export const getAllEventsCalendar = async (grupoId:string, filtros:any) => {
   try {
     const params: Record<string, string> = {};
     if (grupoId) {
       params.grupoId = grupoId;
+    }
+    if (filtros) {
+      params.filtros = filtros;
     }
     const response = await api.get(GET_ALL_EVENTS_CALENDAR,{ params });
     return response.data;

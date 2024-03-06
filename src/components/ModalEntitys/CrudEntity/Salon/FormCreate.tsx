@@ -7,6 +7,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -21,13 +25,13 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
-      const valuesNew = {...values, disponibilidad: horarios}
+      const valuesNew = {...values, ocupacion: horarios}
       onSubmit(valuesNew);
     },
   });
 
   const [open, setOpen] = React.useState(false);
-  const [horarios, setHorarios] = React.useState<string[]>(initialValues?.disponibilidad ? initialValues?.disponibilidad: []);
+  const [horarios, setHorarios] = React.useState<string[]>(initialValues?.ocupacion ? initialValues?.ocupacion: []);
 
   const handleOpen = () => {
     setOpen(true);
@@ -63,10 +67,27 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           onChange={formik.handleChange}
         />
 
+        <FormControl fullWidth>
+          <InputLabel>Tipo</InputLabel>
+          <Select  id="tipo" name="tipo" label="Tipo de Salon" value={formik.values.tipo} onChange={formik.handleChange} onBlur={formik.handleBlur}>
+              <MenuItem value="aula">Aula</MenuItem>
+              <MenuItem value="sala">Sala Computacion</MenuItem>
+              <MenuItem value="laboratorio">Laboratorio</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth>
+          <InputLabel>Facultad</InputLabel>
+          <Select  id="facultad" name="facultad" label="Facultad" value={formik.values.facultad} onChange={formik.handleChange} onBlur={formik.handleBlur}>
+              <MenuItem value="ingenieria">Ingenieria</MenuItem>
+              <MenuItem value="otro">Otro</MenuItem>
+          </Select>
+        </FormControl>
+
         {/* Ajusta según la cantidad de rangos horarios que desees */}
-        {/* <Button variant="outlined" onClick={handleOpen} sx={{ mb: 2 }}>
-         Abrir disponibilidad Horaria
-        </Button> */}
+        <Button variant="outlined" onClick={handleOpen} sx={{ mb: 2 }}>
+          Abrir Horaria Rentringuido
+        </Button>
 
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Seleccionar Horarios</DialogTitle>
