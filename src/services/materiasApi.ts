@@ -34,9 +34,11 @@ export const getMateria = async (id: string) => {
   }
 };
 
-export const getAllMaterias = async () => {
+export const getAllMaterias = async (semestre:any) => {
   try {
-    const response = await api.get(GET_MATERIA_ALL);
+    const params: Record<string, string> = {};
+    params.semestre = '23';
+    const response = await api.get(GET_MATERIA_ALL,{params});
     return response.data;
   } catch (err) {
     return err;

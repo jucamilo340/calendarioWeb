@@ -35,7 +35,7 @@ export const getSalon = async (id: string) => {
   }
 };
 
-export const getAllSalones = async ({ eventoId, horario }: { eventoId?: string, horario?: any } = {}) => {
+export const getAllSalones = async ({ eventoId, horario, tipoSalon }: { eventoId?: string, horario?: any, tipoSalon?: string } = {}) => {
   try {
     const params: Record<string, string> = {};
     if (horario) {
@@ -43,6 +43,9 @@ export const getAllSalones = async ({ eventoId, horario }: { eventoId?: string, 
     }
     if (eventoId) {
       params.eventoId = eventoId;
+    }
+    if (tipoSalon) {
+      params.tipoSalon = tipoSalon;
     }
     const response = await api.get(GET_SALON_ALL, { params });
     return response.data;

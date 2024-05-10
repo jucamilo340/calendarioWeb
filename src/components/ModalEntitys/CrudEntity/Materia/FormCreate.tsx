@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import {
   Box,
@@ -8,8 +8,8 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from '@mui/material';
+import { getAllMaterias } from '../../../../services/materiasApi';
 
 interface FormCreateProps {
   initialValues: any;
@@ -17,12 +17,23 @@ interface FormCreateProps {
 }
 
 const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
+
+  const [materiasL, setMateriasL] = React.useState([]);  
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
       onSubmit(values);
     },
   });
+  const getMaterias = async () => {
+    const materias = await getAllMaterias();
+    setMateriasL(materias);
+  };
+
+  useEffect(() => {
+    getMaterias();
+  }, []);
+  console.log(materiasL);
 
   return (
     <Box>
@@ -91,11 +102,39 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           onChange={formik.handleChange}
         />
 
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Tipo</InputLabel>
           <Select  id="tipo" name="tipo" label="Tipo de Asignatura" value={formik.values.tipo} onChange={formik.handleChange} onBlur={formik.handleBlur}>
               <MenuItem value="carrera">Carrera</MenuItem>
               <MenuItem value="electiva">Electiva</MenuItem>
+          </Select>
+        </FormControl>
+
+         <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="materias-label">Materias requeridas</InputLabel>
+          <Select
+            id="requerimientos"
+            name="requerimientos"
+            label="Materias requeridas"
+            multiple
+            value={formik.values.requerimientos}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          >
+            {materiasL.map((materia: any) => (
+              <MenuItem key={materia._id} value={materia._id}>
+                {materia.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth>
+          <InputLabel>Tipo de salon <span style={{color:"red"}}>Opcional</span></InputLabel>
+          <Select  id="tipoSalon" name="tipoSalon" label="Tipo de Asignatura" value={formik.values.tipoSalon} onChange={formik.handleChange} onBlur={formik.handleBlur}>
+              <MenuItem value="aula">Aula</MenuItem>
+              <MenuItem value="sala">Sala Computacion</MenuItem>
+              <MenuItem value="laboratorio">Laboratorio</MenuItem>
           </Select>
         </FormControl>
 

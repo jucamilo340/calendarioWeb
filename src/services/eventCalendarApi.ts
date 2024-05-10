@@ -114,10 +114,6 @@ export const deleteAllEventCalendar = async (id:string) => {
 };
 
 export const generarHorario = async (id:string) => {
-  try {
     const response = await api.post(GENERATE_EVENT_CALENDAR(id));
     return response.data;
-  } catch (err) {
-    return err;
-  }
 };

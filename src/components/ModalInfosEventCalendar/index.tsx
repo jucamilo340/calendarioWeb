@@ -71,8 +71,9 @@ export const ModalInfosEventCalendar = ({
   const finT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
 
   useEffect(() => {
-    getSalones();
-    getMaterias();
+    if(selectedGroup?.semestre){
+      getMaterias();
+    }
     if (isEditCard) {
       setTitle(eventInfos?.event?.title);
       setCardColor({
@@ -83,7 +84,7 @@ export const ModalInfosEventCalendar = ({
       setTitle('');
       setCardColor({ backgroundColor: '#039be5', textColor: '#ffffff' });
     }
-  }, [eventInfos, isEditCard]);
+  }, [eventInfos, isEditCard, selectedGroup]);
 
 
   const handleSelectCardColor = (color: ColorsCard) => {
@@ -93,14 +94,14 @@ export const ModalInfosEventCalendar = ({
     });
   };
 
-
   const getMaterias = async () => {
-    const materiasAll = await getAllMaterias();
+    const materiasAll = await getAllMaterias(selectedGroup?.semestre);
     setMaterias(materiasAll);
     if (isEditCard) {
       const materia = materiasAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.materia._id);
       setSelectMateria(materia);
       getProfesores(materia);
+      getSalones(materia);
     }
   };
 
@@ -114,9 +115,9 @@ export const ModalInfosEventCalendar = ({
     }
   };
 
-  const getSalones = async () => {
+  const getSalones = async (materia:any) => {
     const salonesAll = await getAllSalones({horario: {inicio: inicioT,
-      fin: finT}, eventoId: eventInfos?.event?.id });
+      fin: finT}, eventoId: eventInfos?.event?.id, tipoSalon: materia.tipoSalon });
     setSalones(salonesAll);
     if (isEditCard) {
       const salon = salonesAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.salon._id);
@@ -202,7 +203,7 @@ export const ModalInfosEventCalendar = ({
         currentEvent.setExtendedProp('salon', selectSalon);
       }
       await updateEventCalendar(eventCalendarUpdated);
-      toast.error('Hubo un error al actualizar la clase');
+      toast.success('Clase actualizada correctamente');
     } catch (error) {
       toast.error('Hubo un error al actualizar la clase');
     } finally {
@@ -226,10 +227,11 @@ export const ModalInfosEventCalendar = ({
             value={selectMateria}
             onChange={(e: any) => {
               getProfesores(e?.target?.value);
+              getSalones(e?.target?.value);
               setSelectMateria(e?.target?.value);
             }}
           >
-            {materias.map((materia: any) => (
+            {materias?.map((materia: any) => (
               <MenuItem key={materia._id} value={materia}>
                 {materia.nombre}
               </MenuItem>
@@ -246,7 +248,7 @@ export const ModalInfosEventCalendar = ({
             value={selectProfesor}
             onChange={(e: any) => setSelectProfesor(e?.target?.value)}
           >
-            {profesores.map((profesor: any) => (
+            {profesores?.map((profesor: any) => (
               <MenuItem key={profesor._id} value={profesor}>
                 {profesor.nombre}
               </MenuItem>
@@ -263,7 +265,7 @@ export const ModalInfosEventCalendar = ({
             value={selectSalon}
             onChange={(e: any) => setSelectSalon(e?.target?.value)}
           >
-            {salones.map((salon: any) => (
+            {salones?.map((salon: any) => (
               <MenuItem key={salon._id} value={salon}>
                 {salon.nombre}
               </MenuItem>

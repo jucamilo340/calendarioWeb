@@ -61,6 +61,7 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
             <MenuItem value={8}>8</MenuItem>
             <MenuItem value={9}>9</MenuItem>
             <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={11}>11</MenuItem>
             {/* Add more semestre options as needed */}
           </Select>
         </FormControl>

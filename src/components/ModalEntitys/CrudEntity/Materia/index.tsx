@@ -20,6 +20,7 @@ import {
   updateMateria,
   deleteMateria,
 } from '../../../../services/materiasApi';
+import MapaConceptual from './Pensum';
 
 const MateriasList: React.FC = () => {
   interface Materia {
@@ -35,12 +36,14 @@ const MateriasList: React.FC = () => {
     nombre: '',
     sesisones: 0,
     credits: 0,
+    requerimientos: []
   };
 
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [materiasPorNivel, setMateriasPorNivel] = useState<{ [key: number]: Materia[] }>({});
   const [selectedMateria, setSelectedMateria] = useState<Materia | null>(null);
   const [open, setOpen] = useState(false);
+  const [openM, setOpenM] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -75,6 +78,7 @@ const MateriasList: React.FC = () => {
 
   const handleEdit = (materia: Materia) => {
     setSelectedMateria(materia);
+    console.log(materia);
     handleOpen();
   };
 
@@ -97,6 +101,9 @@ const MateriasList: React.FC = () => {
 
   return (
     <Box mt={4} mx="auto" p={3} bgcolor="background.paper" boxShadow={3} maxWidth={800}>
+      <Button variant="outlined" onClick={()=> setOpenM(true)} sx={{ mb: 2 }}>
+          Abrir Pensum
+      </Button>
       <TableContainer>
         <Table>
           <TableHead>
@@ -109,6 +116,11 @@ const MateriasList: React.FC = () => {
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
+          </Table>
+      </TableContainer>
+          <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+          <TableContainer>
+          <Table>
           <TableBody>
             {Object.keys(materiasPorNivel).map((nivel) => (
               <Fragment key={nivel}>
@@ -139,10 +151,25 @@ const MateriasList: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      </div>
 
       <Button onClick={handleOpen} variant="contained" color="success" mt={2}>
         Nueva Materia
       </Button>
+
+      <Dialog open={openM} onClose={()=> setOpenM(false)}>
+          <DialogTitle>Pensum Academico</DialogTitle>
+          <DialogContent style={{width:"1000px", height:"500px"}}>
+            <MapaConceptual 
+              materias={materias} 
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=> setOpenM(false)} color="primary">
+              Cerrar
+            </Button>
+          </DialogActions>
+        </Dialog>
 
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>{selectedMateria ? 'Editar Materia' : 'Nueva Materia'}</DialogTitle>

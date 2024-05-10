@@ -96,10 +96,16 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       toast.success("Horario generado Exitosamente !", {
         position: "top-center"
       });
-    } catch (error) {
-      toast.error('Hubo un error al generar el horario',{
-        position: "top-center"
-      });
+    } catch (error:any) {
+      if(error?.response?.data?.message === "Hay materias sin profesor asignado"){
+        toast.error('Hay materias sin profesor asignado',{
+          position: "top-center"
+        });
+      }else {
+        toast.error('Hubo un error al generar el horario',{
+          position: "top-center"
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -124,18 +130,77 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     setGlobalGroup(gruposAll[0]);
     setGrupos(gruposAll);
   };
-  const handlePrintCalendar = (cmpName) => {
-    var docHead = document.head.outerHTML;
-    var printContents = document?.getElementById('component1').outerHTML;
-    var winAttr = "location=yes, statusbar=no, menubar=no, titlebar=no, toolbar=no,dependent=no, width=865, height=600, resizable=yes, screenX=200, screenY=200, personalbar=no, scrollbars=yes";
-
-    var newWin = window.open("", "_blank", winAttr);
-    var writeDoc = newWin.document;
-    writeDoc.open();
-    writeDoc.write('<!doctype html><html> <style>.fc-header-toolbar{display :none !important;} .fc-scroller.fc-scroller-liquid{overflow:visible !important;} .fc-view-harness.fc-view-harness-active{height:auto !important;}</style>' + docHead + '<body onLoad="window.print()">' + printContents + '</body></html>');
-    writeDoc.close();
-    newWin.focus();
+  const handlePrintCalendar = async (cmpName) => {
+    const calendarElement = document.getElementById('component1');
+    const winAttr = "location=yes, statusbar=no, menubar=no, titlebar=no, toolbar=no, dependent=no, width=1083, height=830, resizable=yes, screenX=200, screenY=200, personalbar=no, scrollbars=yes";
+  
+    if (calendarElement) {
+      const cloneContainer = document.createElement('div');
+      cloneContainer.style.position = 'absolute';
+      cloneContainer.style.left = '-9999px'; // Mover fuera de la vista del usuario
+      document.body.appendChild(cloneContainer);
+  
+      // Clonar el contenido y ajustar los estilos para impresión
+      const clonedCalendar = calendarElement.cloneNode(true);
+      clonedCalendar.style.width = '100%';
+      clonedCalendar.style.height = 'auto';
+      clonedCalendar.style.overflow = 'visible'; // Permitir que todo el contenido sea visible
+  
+      // Buscar y ajustar estilos en el contenido clonado
+      const mediaScreenDiv = clonedCalendar.querySelector('.fc-media-screen');
+      if (mediaScreenDiv) {
+        mediaScreenDiv.style.height = '80vh'; // Establecer altura al 100vh
+        mediaScreenDiv.style.width = '300vh';
+      }
+  
+      cloneContainer.appendChild(clonedCalendar);
+  
+      // Esperar un breve momento para asegurar que el contenido se renderice completamente
+      await new Promise(resolve => setTimeout(resolve, 1000));
+  
+      const printContents = cloneContainer.innerHTML;
+      const newWin = window.open("", "_blank", winAttr);
+      const writeDoc = newWin?.document;
+      const docHead = document.head.outerHTML;
+  
+      if (writeDoc) {
+        writeDoc.open();
+        writeDoc.write(
+          `<!doctype html><html>
+          <head>
+            <style>
+              @media print {
+                @page {
+                  size: landscape; /* Orientación horizontal (paisaje) */
+                }
+                body {
+                  width: 100vw; /* Ancho completo de la ventana de visualización */
+                  height: auto; /* Altura automática */
+                  margin: 0; /* Eliminar márgenes */
+                  padding: 0; /* Eliminar relleno */
+                }
+              }
+            </style>
+            ${docHead} <!-- Incluir el encabezado del documento original -->
+          </head>
+          <body onLoad="window.print()">
+            ${printContents} <!-- Incluir el contenido del calendario clonado -->
+          </body>
+          </html>`
+        );
+  
+        writeDoc.close();
+        newWin?.focus();
+      }
+  
+      // Eliminar el contenedor clonado después de imprimir
+      document.body.removeChild(cloneContainer);
+    }
   };
+  
+  
+  
+  
   const now = new Date();
 
   const eventDisplay = (info:any) => {
@@ -181,7 +246,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         <ToastContainer />
       </div>
             <ModalInfosEventCalendar
-            open={modalInfosEvent.isOpen ? (!eventInfos?.event?.title ||eventInfos?.event?.title === 'NaN') : false}
+            open={modalInfosEvent.isOpen ? ((!eventInfos?.event?.title) || (eventInfos?.event?.title === 'NaN')) : false}
             handleClose={modalInfosEvent.handleClose}
             eventInfos={eventInfos}
             isEditCard={isEditCard}
@@ -251,7 +316,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       eventDurationEditable={false}
       dayMaxEvents={true}
       slotMinTime="07:00:00"
-      slotMaxTime="22:00:00"
+      slotMaxTime="23:00:00"
       allDaySlot={false}
       editable={true}
       eventOverlap={false}

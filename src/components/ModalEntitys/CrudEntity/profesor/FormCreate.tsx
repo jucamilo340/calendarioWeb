@@ -197,7 +197,7 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues = {}, onSubmit })
         />
 
         <Button type="submit" variant="contained">
-          Submit
+          Guardar
         </Button>
       </form>
     </Box>
