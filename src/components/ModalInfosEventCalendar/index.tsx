@@ -42,6 +42,7 @@ export const ModalInfosEventCalendar = ({
   isEditCard,
 }: IModalInfosEventCalendaryProps) => {
   const [title, setTitle] = useState<string>('');
+  const {fetchData, setfetchData } = useGroupContext();
   const [cardColor, setCardColor] = useState<ICardColor>({
     backgroundColor: '#039be5',
     textColor: '#ffffff',
@@ -106,11 +107,14 @@ export const ModalInfosEventCalendar = ({
   };
 
   const getProfesores = async (materia: any) => {
-    const profesoresAll = await getAllProfesores({ materiaId: materia._id, horario: {inicio: inicioT,
+    const profesoresAll = await getAllProfesores({ materiaId: materia?._id, horario: {inicio: inicioT,
       fin: finT}, eventoId: eventInfos?.event?.id });
     setProfesores(profesoresAll);
     if (isEditCard) {
-      const profesor = profesoresAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.profesor._id);
+      let profesor = {};
+      if(eventInfos?.event?._def?.extendedProps?.profesor){
+        profesor = profesoresAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.profesor._id);
+      }
       setSelectProfesor(profesor);
     }
   };
@@ -165,6 +169,7 @@ export const ModalInfosEventCalendar = ({
     try {
       await deleteEventCalendar({ id: eventInfos.event.id });
       eventInfos.event.remove();
+      setfetchData(!fetchData);
     } catch (error) {
       toast.error('Hubo un error al eliminar la clase');
     } finally {
@@ -176,13 +181,13 @@ export const ModalInfosEventCalendar = ({
   const handleUpdatedEvent = async () => {
     try {
       const calendarApi: CalendarApi = eventInfos.view.calendar;
-      const nuevaHoraFinal= moment(inicioT).add(selectMateria?.horas, 'hours').format("YYYY-MM-DDTHH:mm:ssZ");
+      //const nuevaHoraFinal= moment(inicioT).add(selectMateria?.horas, 'hours').format("YYYY-MM-DDTHH:mm:ssZ");
       const eventCalendarUpdated = {
         eventCalendar: {
           _id: eventInfos.event.id,
-          title: 'Sin título',
-          start: eventInfos.event.startStr,
-          end: nuevaHoraFinal,
+          title: 'NaN',
+          //start: eventInfos.event.startStr,
+          //end: nuevaHoraFinal,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
           profesor: selectProfesor._id,
@@ -197,7 +202,7 @@ export const ModalInfosEventCalendar = ({
         currentEvent.setProp('title', title !== '' ? title : 'NaN');
         currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
         currentEvent.setProp('textColor', cardColor.textColor);
-        currentEvent.setProp('end', nuevaHoraFinal);
+        //currentEvent.setProp('end', nuevaHoraFinal);
         currentEvent.setExtendedProp('profesor', selectProfesor);
         currentEvent.setExtendedProp('materia', selectMateria);
         currentEvent.setExtendedProp('salon', selectSalon);
@@ -222,6 +227,7 @@ export const ModalInfosEventCalendar = ({
           <Select
             labelId="materias-label"
             id="materias"
+            disabled={isEditCard}
             name="materias"
             label="Materia"
             value={selectMateria}

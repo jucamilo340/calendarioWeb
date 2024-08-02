@@ -34,10 +34,13 @@ export const getMateria = async (id: string) => {
   }
 };
 
-export const getAllMaterias = async (semestre:any) => {
+export const getAllMaterias = async (semestre?:any) => {
+  console.log('semestre', semestre);
   try {
-    const params: Record<string, string> = {};
-    params.semestre = '23';
+    const params: Record<string, number> = {};
+    if(semestre){
+      params.semestre = semestre;
+    }
     const response = await api.get(GET_MATERIA_ALL,{params});
     return response.data;
   } catch (err) {

@@ -19,6 +19,7 @@ import {
   updateGrupo,
   deleteGrupo,
 } from '../../../../services/grupoApi'; // Update the import based on your actual API service
+import { useGroupContext } from '../../../../hooks/GroupContext';
 
 const GrupoList: React.FC = () => {
   interface Grupo {
@@ -33,12 +34,13 @@ const GrupoList: React.FC = () => {
     nombre: '',
     semestre: 0,
     cantidad: 0,
-    diurno: false,
+    diurno: true,
   };
 
   const [grupos, setGrupos] = useState<Grupo[]>([]);
   const [selectedGrupo, setSelectedGrupo] = useState<Grupo | null>(null);
   const [open, setOpen] = useState(false);
+  const { setfetchGroup, fetchGroup } = useGroupContext();
 
   const handleOpen = () => {
     setOpen(true);
@@ -68,7 +70,8 @@ const GrupoList: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteGrupo(id); // Update the API call based on your actual API
+      await deleteGrupo(id);
+      setfetchGroup(!fetchGroup);
       getGrupos();
     } catch (error) {
       console.error('Error deleting grupo:', error);
@@ -84,6 +87,7 @@ const GrupoList: React.FC = () => {
         // Create new grupo
         await createGrupo(values); // Update the API call based on your actual API
       }
+      setfetchGroup(!fetchGroup);
       getGrupos();
       setSelectedGrupo(null);
       handleClose();

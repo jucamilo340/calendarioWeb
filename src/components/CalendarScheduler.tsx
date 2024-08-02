@@ -16,8 +16,10 @@ import { getAllGrupos } from "../services/grupoApi";
 import { Box, MenuItem, Select, Button, Typography } from "@mui/material";
 import { CircularProgress, Backdrop } from '@mui/material';
 import { styled } from '@mui/system';
-import { numeroAOrdinal } from "../constants/metodos";
+import { updateBusinessHours } from "../constants/metodos";
+import InfoIcon from '@mui/icons-material/Info';
 import  { ModalFiltro }  from "../components/ModalFiltro/index";
+import { ModalReport } from "./ModalReport";
 
 const MyBackdrop = styled(Backdrop)({
   zIndex: 10,
@@ -33,13 +35,13 @@ type CalendarSchedulerProps = {
 export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   const [eventInfos, setEventInfos] = useState();
   const [openModal, setOpenModal] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
   const [isEditCard, setIsEditCard] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [businessHours, setBusinessHours] = useState<any>([]);
   const [grupos, setGrupos] = useState([]);
   const calendarRef = useRef(null);
-  const { selectedGroup, setGlobalGroup, fetchData, setfetchData } = useGroupContext();
-  useEffect(() => {
-  }, []);  
+  const { selectedGroup, setGlobalGroup, fetchGroup, setfetchGroup, fetchData, setfetchData } = useGroupContext();
 
   const weekends = {
     weekendsVisible: true,
@@ -54,6 +56,14 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleOpenReport = () => {
+    setOpenReport(true);
+  };
+
+  const handleCloseReport = () => {
+    setOpenReport(false);
   };
 
 
@@ -81,17 +91,19 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
           textColor: changeInfo.event.textColor,
         },
       };
-
       await updateDateEventCalendar(eventCalendarUpdated);
-    } catch (err) {
-      toast.error('Hubo un error al actualizar la Clase');
+      setfetchData(!fetchData);
+    } catch (err: any) {
+      changeInfo.revert();
+      toast.error(err?.response?.data?.message || 'Hubo un error al actualizar el evento');
     }
   };
+  
 
   const generarHorarioEventos = async () => {
     setLoading(true);
     try {
-      await generarHorario(selectedGroup?._id);
+      const result = await generarHorario(selectedGroup?._id);
       setfetchData(!fetchData);
       toast.success("Horario generado Exitosamente !", {
         position: "top-center"
@@ -111,6 +123,64 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     }
   };
 
+  const handleEventDragStop = (info:any) => {
+    setBusinessHours([]);
+    let profesor : any = [];
+    const noHours = (info?.event?.extendedProps?.profesor?.ocupacion.concat(info?.event?.extendedProps?.salon?.ocupacion).length - 2) === 0;
+    if(!info.event.extendedProps.profesor || noHours){
+      profesor = info.event.extendedProps.salon.ocupacion;
+      if((info.event.extendedProps.salon.ocupacion.length - 1) === 0){
+        removeRedClassFromNonBusinessHours(false);
+      }else{
+        removeRedClassFromNonBusinessHours(true);
+      }
+    }else{
+      profesor = info.event.extendedProps.profesor.ocupacion.concat(info.event.extendedProps.salon.ocupacion);
+      removeRedClassFromNonBusinessHours(true);
+    }
+  };
+
+  const handleEventDragStart = (info:any) => {
+    let profesor : any = [];
+    const noHours = (info?.event?.extendedProps?.profesor?.ocupacion.concat(info?.event?.extendedProps?.salon?.ocupacion).length - 2) === 0;
+    if(!info.event.extendedProps.profesor || noHours){
+      profesor = info.event.extendedProps.salon.ocupacion;
+      if((info.event.extendedProps.salon.ocupacion.length - 1) === 0){
+        addRedClassToNonBusinessHours(false);
+      }else{
+        addRedClassToNonBusinessHours(true);
+      }
+    }else{
+      profesor = info.event.extendedProps.profesor.ocupacion.concat(info.event.extendedProps.salon.ocupacion);
+      addRedClassToNonBusinessHours(true);
+    }
+    const updateHours = updateBusinessHours(profesor, info?.event);
+      setBusinessHours(updateHours)
+  };
+
+  const addRedClassToNonBusinessHours = (profesor:boolean) => {
+    const timeGridEl = document.querySelector('.fc-timegrid');
+    if (timeGridEl) {
+      const timeSlots = timeGridEl.querySelectorAll('.fc-timegrid-slot');
+      timeSlots.forEach(slot => {
+        if (!slot.classList.contains('fc-non-business')) {
+          slot.classList.add(profesor ? 'fc-red-hours' : 'fc-green-hours');
+        }
+      });
+    }
+  };
+
+  const removeRedClassFromNonBusinessHours = (profesor:boolean) => {
+    const timeGridEl = document.querySelector('.fc-timegrid');
+    if (timeGridEl) {
+      const timeSlots = timeGridEl.querySelectorAll('.fc-timegrid-slot');
+      timeSlots.forEach(slot => {
+        slot.classList.remove(profesor ? 'fc-red-hours' : 'fc-green-hours');
+      });
+    }
+  };
+
+
   const eliminarHorarioEventos = async () => {
     try {
       await deleteAllEventCalendar(selectedGroup?._id);
@@ -124,13 +194,13 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       });
     }
   };
-
   const getGrupos = async () => {
-    const gruposAll = await getAllGrupos();
-    setGlobalGroup(gruposAll[0]);
-    setGrupos(gruposAll);
+      const gruposAll = await getAllGrupos();
+      setGlobalGroup(gruposAll[0]);
+      setGrupos(gruposAll);
   };
-  const handlePrintCalendar = async (cmpName) => {
+  
+  const handlePrintCalendar = async () => {
     const calendarElement = document.getElementById('component1');
     const winAttr = "location=yes, statusbar=no, menubar=no, titlebar=no, toolbar=no, dependent=no, width=1083, height=830, resizable=yes, screenX=200, screenY=200, personalbar=no, scrollbars=yes";
   
@@ -141,7 +211,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       document.body.appendChild(cloneContainer);
   
       // Clonar el contenido y ajustar los estilos para impresión
-      const clonedCalendar = calendarElement.cloneNode(true);
+      const clonedCalendar: any = calendarElement.cloneNode(true);
       clonedCalendar.style.width = '100%';
       clonedCalendar.style.height = 'auto';
       clonedCalendar.style.overflow = 'visible'; // Permitir que todo el contenido sea visible
@@ -197,11 +267,6 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       document.body.removeChild(cloneContainer);
     }
   };
-  
-  
-  
-  
-  const now = new Date();
 
   const eventDisplay = (info:any) => {
     const startHour = new Date(info.event.start);
@@ -216,7 +281,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
      <div>
         <span>{`${horasFormatoStart}:${minutosFormatoStart} - ${horasFormatoEnd}:${minutosFormatoEnd}`}</span><br/>
         <span>Asignatura: {info?.event?._def?.extendedProps?.materia?.nombre}</span><br/>
-        <span>Profesor: {info?.event?._def?.extendedProps?.profesor?.nombre}</span><br/>
+        <span>Profesor: {info?.event?._def?.extendedProps?.profesor ? info?.event?._def?.extendedProps?.profesor?.nombre : 'Sin Asignar'}</span><br/>
         <span>Salon: {info?.event?._def?.extendedProps?.salon?.nombre}</span>
      </div>
      :
@@ -229,7 +294,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
 
   useEffect(() => {
       getGrupos();
-  }, []);
+  }, [fetchGroup]);
 
   const hasEventOnHour = (date: Date) => {
     const dateString = date.toISOString();
@@ -279,11 +344,14 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         <Button onClick={()=> eliminarHorarioEventos()} sx={{marginLeft: '50px'}} variant="contained" color="error">
           Eliminar Horario
         </Button>
-        <Button onClick={()=>handlePrintCalendar('component1')} sx={{marginLeft: '50px'}} variant="contained" color="primary">
+        <Button onClick={handlePrintCalendar} sx={{marginLeft: '50px'}} variant="contained" color="primary">
           Imprimir Horario
         </Button>
         <Button onClick={()=>handleOpenModal()} sx={{marginLeft: '50px'}} variant="contained" color="primary">
           Abrir Filtros
+        </Button>
+        <Button sx={{marginLeft: '50px'}} onClick={()=>handleOpenReport()}>
+           <InfoIcon sx={{ fontSize: 40, color: 'success.main' }} />
         </Button>
       </Box>
     <Box id="component1" sx={{width: '100%', height: '100%'}}>
@@ -320,15 +388,14 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       allDaySlot={false}
       editable={true}
       eventOverlap={false}
-      // slotLaneContent={({ date }) => {const isEventHour = hasEventOnHour(date);
-      //   const className = isEventHour ? '' : 'no-event-background';
-      //   return <div style={{height: '100%'}} className={className}></div>;
-      // }}
       // slotLabelFormat={{
       //   hour: 'numeric',
       //   minute: '2-digit',
       //   meridiem: 'short'
       // }}
+      businessHours =  {businessHours}
+      eventDragStart={handleEventDragStart}
+      eventDragStop={handleEventDragStop}
       height="700px"
       buttonText={{
         today: "Hoy",
@@ -339,6 +406,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       eventContent= {eventDisplay}
     />
     <ModalFiltro open={openModal} onClose={handleCloseModal} />
+    <ModalReport open={openReport} onClose={handleCloseReport} />
     </Box>
   </ContainerCalendar>
   );

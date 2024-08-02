@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@mui/material';
 import FormCreate from './FormCreate';
 import {
@@ -86,7 +87,6 @@ const ProfesoresList: React.FC = () => {
     handleClose();
   };
 
-  console.log(profesores);
 
   const getColorClass = (horasAsignadas, tipoProfesor) => {
     if (
@@ -100,6 +100,30 @@ const ProfesoresList: React.FC = () => {
 
   return (
     <Box mt={4} mx="auto" p={3} bgcolor="background.paper" boxShadow={3} maxWidth={800}>
+      <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" mr={4}>
+              <Box
+                  sx={{
+                      width: 24,
+                      height: 24,
+                      backgroundColor: 'red',
+                      marginRight: 2,
+                  }}
+              />
+              <Typography variant="body1">Faltan horas por asignar faltantes</Typography>
+          </Box>
+          <Box display="flex" alignItems="center">
+              <Box
+                  sx={{
+                      width: 24,
+                      height: 24,
+                      backgroundColor: 'yellow',
+                      marginRight: 2,
+                  }}
+              />
+              <Typography variant="body1">Horas del profesor excedidas</Typography>
+          </Box>
+      </Box>
       <TableContainer>
         <Table>
           <TableHead>

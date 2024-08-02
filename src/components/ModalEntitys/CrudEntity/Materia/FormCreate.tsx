@@ -33,7 +33,6 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
   useEffect(() => {
     getMaterias();
   }, []);
-  console.log(materiasL);
 
   return (
     <Box>

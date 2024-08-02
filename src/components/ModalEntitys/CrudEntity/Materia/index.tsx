@@ -78,7 +78,6 @@ const MateriasList: React.FC = () => {
 
   const handleEdit = (materia: Materia) => {
     setSelectedMateria(materia);
-    console.log(materia);
     handleOpen();
   };
 

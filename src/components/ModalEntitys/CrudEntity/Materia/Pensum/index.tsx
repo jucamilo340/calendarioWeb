@@ -21,18 +21,34 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
     materiasPorNivel[materia.nivel].push(materia);
   });
 
-  // Generar divs para representar las materias
+  // Generar divs para representar las materias y labels de los semestres
   Object.keys(materiasPorNivel).forEach(nivel => {
     const nivelNum = parseInt(nivel);
     const materiasNivel = materiasPorNivel[nivelNum];
+
+    // Agregar el label del semestre
+    materiasDivs.push(
+      <div
+        key={`semestre-${nivelNum}`}
+        style={{
+          position: 'absolute',
+          top: `${nivelNum * 80}px`,
+          left: '10px',
+          fontWeight: 'bold',
+          zIndex: 2,
+        }}
+      >
+        Semestre {nivelNum}
+      </div>
+    );
 
     materiasNivel.forEach(materia => {
       materiasDivs.push(
         <div
           key={materia._id}
           style={{
-            width: '100px',
-            height: '50px',
+            width: '110px',
+            height: '60px',
             backgroundColor: 'lightblue',
             display: 'flex',
             alignItems: 'center',
@@ -42,10 +58,11 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
             borderRadius: '5px',
             boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
             top: `${materia.nivel * 80}px`, // Espaciado entre niveles
-            left: `${materiasNivel.indexOf(materia) * 150}px`, // Espaciado entre materias en el mismo nivel
+            left: `${materiasNivel.indexOf(materia) * 150 + 100}px`, // Espaciado entre materias en el mismo nivel con margen para labels
+            zIndex: 2, // Asegurar que las materias estén delante de las líneas
           }}
         >
-          {materia.nombre}
+          <p style={{fontSize: '10px', textAlign: 'center'}}>{materia.nombre}</p>
         </div>
       );
     });
@@ -58,15 +75,15 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
       const requerimiento = materias.find(m => m._id === requerimientoId);
       if (requerimiento) {
         const key = `${materia._id}-${requerimiento._id}`;
-        const color = colorMap[materia._id] || '#' + Math.floor(Math.random() * 16777215).toString(16); // Obtener color o generar uno nuevo
-
-        // Registrar el color en el mapa para esta materia
-        colorMap[materia._id] = color;
+        if (!colorMap[key]) {
+          colorMap[key] = '#' + Math.floor(Math.random() * 16777215).toString(16); // Generar color si no existe
+        }
+        const color = colorMap[key]; // Usar color asignado
 
         const distancia = Math.abs(materia.nivel - requerimiento.nivel) * 80; // Distancia entre las materias
-        const posicionX1 = materiasPorNivel[materia.nivel].indexOf(materia) * 150 + 50; // Posición X de la primera materia
+        const posicionX1 = materiasPorNivel[materia.nivel].indexOf(materia) * 150 + 150; // Posición X de la primera materia
         const posicionY1 = materia.nivel * 80 + 25; // Posición Y de la primera materia
-        const posicionX2 = materiasPorNivel[requerimiento.nivel].indexOf(requerimiento) * 150 + 50; // Posición X de la segunda materia
+        const posicionX2 = materiasPorNivel[requerimiento.nivel].indexOf(requerimiento) * 150 + 150; // Posición X de la segunda materia
         const posicionY2 = requerimiento.nivel * 80 + 25; // Posición Y de la segunda materia
 
         connectedLines.push(
@@ -91,10 +108,10 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {materiasDivs}
-      <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+      <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
         {lineasSvg}
       </svg>
+      {materiasDivs}
     </div>
   );
 };

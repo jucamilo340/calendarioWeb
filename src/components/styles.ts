@@ -19,7 +19,6 @@ export const ContainerCalendar = styled('div')`
       width: 50%; /* Ocupa la mitad del ancho de la página */
       overflow: hidden; /* Para evitar desbordamiento */
     }
-  
     /* Agrega otros estilos específicos para impresión según sea necesario */
   }
 `;

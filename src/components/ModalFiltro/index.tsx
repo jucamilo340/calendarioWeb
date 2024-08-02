@@ -22,7 +22,7 @@ export const ModalFiltro = ({ open, onClose }: Props) => {
   const [salones, setSalones] = useState([]);
   const [selectSalon, setSelectSalon] = useState<any>('');
 
-  const { filtros, setfiltros, fetchData, setfetchData } = useGroupContext();
+  const { filtros, setfiltros, fetchData, setfetchData, selectedGroup } = useGroupContext();
 
   useEffect(() => {
     // Se ejecutará cuando el componente se monte

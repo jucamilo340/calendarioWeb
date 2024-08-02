@@ -83,12 +83,8 @@ export const updateEventCalendar = async (data: IUpdateEventCalendar) => {
 };
 
 export const updateDateEventCalendar = async (data: IUpdateDateEventCalendar) => {
-  try {
     const response = await api.put(UPDATE_DATE_EVENT_CALENDAR, data);
     return response.data;
-  } catch (err) {
-    return err;
-  }
 };
 
 interface IDeleteEventCalendar {

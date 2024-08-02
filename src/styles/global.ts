@@ -23,6 +23,15 @@ const GlobalStyle = createGlobalStyle`
   button, a{
     cursor: pointer;
   }
+  .fc-non-business {
+    background-color: #C0FFC0 !important;
+  }
+  .fc-red-hours {
+    background-color: #FFC0C0 !important;
+  }
+  .fc-green-hours {
+    background-color: #C0FFC0 !important;
+  }
   a{
     text-decoration: none;
     color: inherit;
