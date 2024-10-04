@@ -107,7 +107,6 @@ const MateriasList: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>N# de Sesiones</TableCell>
               <TableCell>Horas Semanales</TableCell>
@@ -130,7 +129,6 @@ const MateriasList: React.FC = () => {
                 </TableRow>
                 {materiasPorNivel[parseInt(nivel)].map((materia) => (
                   <TableRow key={materia._id}>
-                    <TableCell>{materia._id}</TableCell>
                     <TableCell>{materia.nombre}</TableCell>
                     <TableCell>{materia.sesiones}</TableCell>
                     <TableCell>{materia.horasSemanales}</TableCell>
@@ -156,9 +154,9 @@ const MateriasList: React.FC = () => {
         Nueva Materia
       </Button>
 
-      <Dialog open={openM} onClose={()=> setOpenM(false)}>
+      <Dialog open={openM} onClose={()=> setOpenM(false)} maxWidth="lg" fullWidth>
           <DialogTitle>Pensum Academico</DialogTitle>
-          <DialogContent style={{width:"1000px", height:"500px"}}>
+          <DialogContent style={{width:"1500px", height:"500px"}}>
             <MapaConceptual 
               materias={materias} 
             />
@@ -170,7 +168,7 @@ const MateriasList: React.FC = () => {
           </DialogActions>
         </Dialog>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
         <DialogTitle>{selectedMateria ? 'Editar Materia' : 'Nueva Materia'}</DialogTitle>
         <DialogContent>
           <FormCreate initialValues={selectedMateria || initialValues} onSubmit={handleSave} />

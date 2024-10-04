@@ -5,6 +5,7 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import GroupsIcon from '@mui/icons-material/Groups';
+import EventIcon from '@mui/icons-material/Event';
 import CrudPanel from './CrudEntity';
 
 type Props = {
@@ -51,6 +52,15 @@ export const Options = ({ open, onClose }: Props) => {
           <Typography variant="h4" align="center" gutterBottom>
             Selecciona una Entidad
           </Typography>
+          <IconButton
+            sx={{ display: 'flex', alignItems: 'center', my: 2 }}
+            onClick={() => setPanel('plan')}
+          >
+            <EventIcon sx={{ fontSize: 48 }} color='warning' />
+            <Typography variant="h6" sx={{ ml: 2 }}>
+              Plan
+            </Typography>
+          </IconButton>
           <IconButton
             sx={{ display: 'flex', alignItems: 'center', my: 2 }}
             onClick={() => setPanel('grupo')}

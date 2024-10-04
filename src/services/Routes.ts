@@ -4,6 +4,12 @@ export const GET_MATERIA_ALL = '/api/materia/all';
 export const UPDATE_MATERIA = 'api/materia';
 export const DELETE_MATERIA= (id: string) => `/api/materia/${id}`;
 
+export const CREATE_PLAN = '/api/plan';
+export const GET_PLAN = (id: string) => `/api/plan/${id}`;
+export const GET_PLAN_ALL = '/api/plan/all';
+export const UPDATE_PLAN = '/api/plan';
+export const DELETE_PLAN = (id: string) => `/api/plan/${id}`;
+
 export const CREATE_PROFESOR = '/api/profesor';
 export const GET_PROFESOR = (id: string) => `/api/profesor/${id}`;
 export const GET_PROFESOR_ALL = '/api/profesor/all';

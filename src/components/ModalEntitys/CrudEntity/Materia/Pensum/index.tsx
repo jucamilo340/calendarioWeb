@@ -32,8 +32,8 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
         key={`semestre-${nivelNum}`}
         style={{
           position: 'absolute',
-          top: `${nivelNum * 80}px`,
-          left: '10px',
+          top: '10px',
+          left: `${nivelNum * 200}px`,
           fontWeight: 'bold',
           zIndex: 2,
         }}
@@ -42,7 +42,7 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
       </div>
     );
 
-    materiasNivel.forEach(materia => {
+    materiasNivel.forEach((materia, index) => {
       materiasDivs.push(
         <div
           key={materia._id}
@@ -57,8 +57,8 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
             border: '1px solid black',
             borderRadius: '5px',
             boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
-            top: `${materia.nivel * 80}px`, // Espaciado entre niveles
-            left: `${materiasNivel.indexOf(materia) * 150 + 100}px`, // Espaciado entre materias en el mismo nivel con margen para labels
+            top: `${index * 100 + 50}px`, // Espaciado entre materias en el mismo nivel
+            left: `${nivelNum * 200}px`, // Espaciado entre niveles
             zIndex: 2, // Asegurar que las materias estén delante de las líneas
           }}
         >
@@ -80,11 +80,11 @@ const MapaConceptual: React.FC<{ materias: Materia[] }> = ({ materias }) => {
         }
         const color = colorMap[key]; // Usar color asignado
 
-        const distancia = Math.abs(materia.nivel - requerimiento.nivel) * 80; // Distancia entre las materias
-        const posicionX1 = materiasPorNivel[materia.nivel].indexOf(materia) * 150 + 150; // Posición X de la primera materia
-        const posicionY1 = materia.nivel * 80 + 25; // Posición Y de la primera materia
-        const posicionX2 = materiasPorNivel[requerimiento.nivel].indexOf(requerimiento) * 150 + 150; // Posición X de la segunda materia
-        const posicionY2 = requerimiento.nivel * 80 + 25; // Posición Y de la segunda materia
+        const distancia = Math.abs(materia.nivel - requerimiento.nivel) * 200; // Distancia entre los semestres
+        const posicionX1 = materia.nivel * 200 + 55; // Posición X de la primera materia
+        const posicionY1 = materiasPorNivel[materia.nivel].indexOf(materia) * 100 + 80; // Posición Y de la primera materia
+        const posicionX2 = requerimiento.nivel * 200 + 55; // Posición X de la segunda materia
+        const posicionY2 = materiasPorNivel[requerimiento.nivel].indexOf(requerimiento) * 100 + 80; // Posición Y de la segunda materia
 
         connectedLines.push(
           <line

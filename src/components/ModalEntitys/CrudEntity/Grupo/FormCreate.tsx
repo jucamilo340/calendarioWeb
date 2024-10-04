@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, Checkbox } from '@mui/material';
 import { useFormik } from 'formik';
+import { getAllPlanes } from '../../../../services/planApi';
 
 interface FormCreateProps {
   initialValues: any;
@@ -11,13 +12,51 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
+      values.plan = values.plan._id;
       onSubmit(values);
     },
   });
+  const [planes, setPlanes] = useState<any[]>([]);
+
+  const getPlanes = async () => {
+    try {
+      const response = await getAllPlanes();
+      setPlanes(response);
+    } catch (error) {
+      console.error('Error fetching planes:', error);
+    }
+  };
+
+  useEffect(() => {
+    getPlanes();
+  }, []);
 
   return (
     <Box>
       <form onSubmit={formik.handleSubmit}>
+      <FormControl fullWidth sx={{ mb: 2, mt: 5 }}>
+          <InputLabel id="materias-label">Plan de Estudio</InputLabel>
+          <Select
+            labelId="materias-label"
+            id="plan"
+            //disabled={isEditCard}
+            name="plan"
+            label="Plan de Estudio"
+            //value={selectMateria}
+            // onChange={(e: any) => {
+            //   getProfesores(e?.target?.value);
+            //   getSalones(e?.target?.value);
+            //   setSelectMateria(e?.target?.value);
+            // }}
+            onChange={formik.handleChange}
+          >
+            {planes?.map((plan: any) => (
+              <MenuItem key={plan._id} value={plan}>
+                {plan.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           fullWidth
           id="nombre"

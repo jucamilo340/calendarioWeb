@@ -20,6 +20,7 @@ import {
   deleteGrupo,
 } from '../../../../services/grupoApi'; // Update the import based on your actual API service
 import { useGroupContext } from '../../../../hooks/GroupContext';
+import { getAllPlanes } from '../../../../services/planApi';
 
 const GrupoList: React.FC = () => {
   interface Grupo {
@@ -38,6 +39,7 @@ const GrupoList: React.FC = () => {
   };
 
   const [grupos, setGrupos] = useState<Grupo[]>([]);
+  const [planes, setPlanes] = useState<Grupo[]>([]);
   const [selectedGrupo, setSelectedGrupo] = useState<Grupo | null>(null);
   const [open, setOpen] = useState(false);
   const { setfetchGroup, fetchGroup } = useGroupContext();
@@ -50,6 +52,15 @@ const GrupoList: React.FC = () => {
     setOpen(false);
   };
 
+  const getPlanes = async () => {
+    try {
+      const response = await getAllPlanes(); // Actualiza la llamada a la API
+      setPlanes(response);
+    } catch (error) {
+      console.error('Error fetching planes:', error);
+    }
+  };
+
   const getGrupos = async () => {
     try {
       const response = await getAllGrupos(); // Update the API call based on your actual API
@@ -59,8 +70,11 @@ const GrupoList: React.FC = () => {
     }
   };
 
+  console.log('planes:', planes);
+
   useEffect(() => {
     getGrupos();
+    getPlanes();
   }, []);
 
   const handleEdit = (grupo: Grupo) => {
@@ -82,9 +96,10 @@ const GrupoList: React.FC = () => {
     try {
       if (selectedGrupo) {
         // Edit existing grupo
-        await updateGrupo(selectedGrupo._id, values); // Update the API call based on your actual API
+        await updateGrupo(values); // Update the API call based on your actual API
       } else {
         // Create new grupo
+        console.log('values:', values);
         await createGrupo(values); // Update the API call based on your actual API
       }
       setfetchGroup(!fetchGroup);
@@ -102,7 +117,6 @@ const GrupoList: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Semestre</TableCell>
               <TableCell>Cantidad de Estudiantes</TableCell>
@@ -113,7 +127,6 @@ const GrupoList: React.FC = () => {
           <TableBody>
             {grupos.map((grupo) => (
               <TableRow key={grupo._id}>
-                <TableCell>{grupo._id}</TableCell>
                 <TableCell>{grupo.nombre}</TableCell>
                 <TableCell>{grupo.semestre}</TableCell>
                 <TableCell>{grupo.cantidad}</TableCell>

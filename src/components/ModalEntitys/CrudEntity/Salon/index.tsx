@@ -21,6 +21,7 @@ import {
   deleteSalon,
 } from '../../../../services/salonesApi';
 import { ToastContainer, toast } from 'react-toastify';
+import Horario from '../profesor/Calendar';
 
 const SalonesList: React.FC = () => {
   interface RangoHorario {
@@ -48,6 +49,8 @@ const SalonesList: React.FC = () => {
   const [salones, setSalones] = useState<Salon[]>([]);
   const [selectedSalon, setSelectedSalon] = useState<Salon | null>(null);
   const [open, setOpen] = useState(false);
+  const [showCalendar, setshowCalendar] = useState(false);
+  const [calendarNow, setcalendarNow] = useState([]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -108,7 +111,6 @@ const SalonesList: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Capacidad</TableCell>
               <TableCell>Horario</TableCell>
@@ -119,16 +121,21 @@ const SalonesList: React.FC = () => {
           <TableBody>
             {salones.map((salon) => (
               <TableRow key={salon._id}>
-                <TableCell>{salon._id}</TableCell>
                 <TableCell>{salon.nombre}</TableCell>
                 <TableCell>{salon.tipo}</TableCell>
                 <TableCell>{salon.capacidad}</TableCell>
                 <TableCell>
-    {salon.ocupacion.map((dis: any) => (
-      <>
-      <span key={dis._id}>{dis.dia} - {dis.inicio} - {dis.fin}</span><br/>
-      </>
-    ))}
+                <Button
+                      onClick={() => {
+                        setcalendarNow(salon?.ocupacion);
+                        setshowCalendar(true);
+                      }}
+                      variant="contained"
+                      color="success"
+                      mt={2}
+                    >
+                      Ver Horario
+                    </Button>
     </TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(salon)} color="primary">
@@ -152,6 +159,17 @@ const SalonesList: React.FC = () => {
         <DialogTitle>{selectedSalon ? 'Editar Salón' : 'Nuevo Salón'}</DialogTitle>
         <DialogContent>
           <FormCreate initialValues={selectedSalon || initialValues} onSubmit={handleSave} />
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={showCalendar}
+        onClose={() => setshowCalendar(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Calendario del profesor</DialogTitle>
+        <DialogContent>
+          <Horario eventos={calendarNow} />
         </DialogContent>
       </Dialog>
     </Box>
