@@ -34,12 +34,14 @@ export const getMateria = async (id: string) => {
   }
 };
 
-export const getAllMaterias = async (semestre?:any) => {
-  console.log('semestre', semestre);
+export const getAllMaterias = async ({ semestre, plan }: { semestre?: number, plan?: string } = {}) => {
   try {
-    const params: Record<string, number> = {};
+    const params: any = {};
     if(semestre){
       params.semestre = semestre;
+    }
+    if(plan){
+      params.plan = plan;
     }
     const response = await api.get(GET_MATERIA_ALL,{params});
     return response.data;

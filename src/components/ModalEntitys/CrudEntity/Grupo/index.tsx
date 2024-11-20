@@ -69,9 +69,7 @@ const GrupoList: React.FC = () => {
       console.error('Error fetching grupos:', error);
     }
   };
-
-  console.log('planes:', planes);
-
+ 
   useEffect(() => {
     getGrupos();
     getPlanes();

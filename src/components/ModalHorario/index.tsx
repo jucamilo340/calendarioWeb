@@ -28,6 +28,7 @@ interface SeleccionHorariosProps {
 
 const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHorarios }) => {
   const [diaSeleccionado, setDiaSeleccionado] = useState<string>('');
+  console.log('horarios', horarios);
   const [horaInicioSeleccionada, setHoraInicioSeleccionada] = useState<string>('');
   const [horaFinSeleccionada, setHoraFinSeleccionada] = useState<string>('');
   const [nombreSeleccionado, setNombreSeleccionado] = useState<string>('');
@@ -88,6 +89,7 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           <MenuItem value="miercoles">Miércoles</MenuItem>
           <MenuItem value="jueves">Jueves</MenuItem>
           <MenuItem value="viernes">Viernes</MenuItem>
+          <MenuItem value="viernes">Sabado</MenuItem>
         </Select>
       </FormControl>
 

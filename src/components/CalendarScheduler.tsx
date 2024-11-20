@@ -18,8 +18,11 @@ import { CircularProgress, Backdrop } from '@mui/material';
 import { styled } from '@mui/system';
 import { updateBusinessHours } from "../constants/metodos";
 import InfoIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
 import  { ModalFiltro }  from "../components/ModalFiltro/index";
 import { ModalReport } from "./ModalReport";
+import { getAllPlanes } from "../services/planApi";
+import { ModalConfig } from "./ModalConfig";
 
 const MyBackdrop = styled(Backdrop)({
   zIndex: 10,
@@ -36,13 +39,13 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   const [eventInfos, setEventInfos] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [openReport, setOpenReport] = useState(false);
+  const [openConfig, setOpenConfig] = useState(false);
   const [isEditCard, setIsEditCard] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [businessHours, setBusinessHours] = useState<any>([]);
   const [grupos, setGrupos] = useState([]);
   const calendarRef = useRef(null);
-  const { selectedGroup, setGlobalGroup, fetchGroup, setfetchGroup, fetchData, setfetchData } = useGroupContext();
-
+  const { selectedGroup, setGlobalGroup, setSelectedPlan, selectedPlan, fetchGroup, setfetchGroup, fetchData, setfetchData } = useGroupContext();
   const weekends = {
     weekendsVisible: true,
     currentEvents: [],
@@ -64,6 +67,14 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
 
   const handleCloseReport = () => {
     setOpenReport(false);
+  };
+
+  const handleOpenConfig = () => {
+    setOpenConfig(true);
+  };
+
+  const handleCloseConfig = () => {
+    setOpenConfig(false);
   };
 
 
@@ -199,6 +210,15 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
       setGlobalGroup(gruposAll[0]);
       setGrupos(gruposAll);
   };
+
+  const getPlanes = async () => {
+    try {
+      const response = await getAllPlanes();
+      setSelectedPlan(response[0]);
+    } catch (error) {
+      console.error('Error fetching planes:', error);
+    }
+  };
   
   const handlePrintCalendar = async () => {
     const calendarElement = document.getElementById('component1');
@@ -294,6 +314,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
 
   useEffect(() => {
       getGrupos();
+      getPlanes();
   }, [fetchGroup]);
 
   const hasEventOnHour = (date: Date) => {
@@ -350,9 +371,12 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         <Button onClick={()=>handleOpenModal()} sx={{marginLeft: '50px'}} variant="contained" color="primary">
           Abrir Filtros
         </Button>
+        {/* <Button sx={{marginLeft: '50px'}} onClick={()=>handleOpenConfig()}>
+           <SettingsIcon sx={{ fontSize: 40, color: 'success.main' }} />
+        </Button>
         <Button sx={{marginLeft: '50px'}} onClick={()=>handleOpenReport()}>
            <InfoIcon sx={{ fontSize: 40, color: 'success.main' }} />
-        </Button>
+        </Button> */}
       </Box>
     <Box id="component1" sx={{width: '100%', height: '100%'}}>
     <FullCalendar
@@ -407,6 +431,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     />
     <ModalFiltro open={openModal} onClose={handleCloseModal} />
     <ModalReport open={openReport} onClose={handleCloseReport} />
+    <ModalConfig open={openConfig} onClose={handleCloseConfig} />
     </Box>
   </ContainerCalendar>
   );

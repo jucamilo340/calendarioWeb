@@ -105,7 +105,6 @@ const ProfesoresList: React.FC = () => {
     }
     return "green";
   };
-  console.log(profesores);
   return (
     <Box
       mt={4}

@@ -51,13 +51,12 @@ export const ModalInfosEventCalendar = ({
 
   const [materias, setMaterias] = useState([]);
   const [selectMateria, setSelectMateria] = useState<any>('');
-
   const [profesores, setProfesores] = useState([]);
   const [selectProfesor, setSelectProfesor] = useState<any>('');
 
   const [salones, setSalones] = useState([]);
   const [selectSalon, setSelectSalon] = useState<any>('');
-  const { selectedGroup } = useGroupContext();
+  const { selectedGroup, selectedPlan } = useGroupContext();
 
   useEffect(() => {
     setSalones([]);
@@ -69,8 +68,7 @@ export const ModalInfosEventCalendar = ({
   
 
   const inicioT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
-  const finT = isEditCard ? eventInfos?.event?.startStr : eventInfos?.startStr;
-
+  const finT = isEditCard ? eventInfos?.event?.endStr : eventInfos?.endStr;
   useEffect(() => {
     if(selectedGroup?.semestre){
       getMaterias();
@@ -96,7 +94,7 @@ export const ModalInfosEventCalendar = ({
   };
 
   const getMaterias = async () => {
-    const materiasAll = await getAllMaterias(selectedGroup?.semestre);
+    const materiasAll = await getAllMaterias({semestre: selectedGroup?.semestre, plan: selectedPlan._id});
     setMaterias(materiasAll);
     if (isEditCard) {
       const materia = materiasAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.materia._id);
@@ -121,7 +119,7 @@ export const ModalInfosEventCalendar = ({
 
   const getSalones = async (materia:any) => {
     const salonesAll = await getAllSalones({horario: {inicio: inicioT,
-      fin: finT}, eventoId: eventInfos?.event?.id, tipoSalon: materia.tipoSalon });
+      fin: finT}, eventoId: eventInfos?.event?.id });
     setSalones(salonesAll);
     if (isEditCard) {
       const salon = salonesAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.salon._id);

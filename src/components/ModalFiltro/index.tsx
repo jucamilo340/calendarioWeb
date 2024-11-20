@@ -48,6 +48,8 @@ export const ModalFiltro = ({ open, onClose }: Props) => {
     setMaterias([...materiasAll, { _id: '', nombre: 'Todos' }]);
   };
 
+  console.log('materias', materias);
+
 
   const getProfesores = async () => {
     const profesoresAll = await getAllProfesores();

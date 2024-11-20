@@ -90,7 +90,7 @@ const Horario: React.FC<HorarioProps> = ({ eventos }) => {
             );
             return (
               <Cell key={`${dia}-${hora}`} evento={!!evento}>
-                {evento ? <div>{evento.nombre}</div> : ''}
+                {evento ? <div>{evento.nombre || evento?.nombreClase}</div> : ''}
               </Cell>
             );
           })}

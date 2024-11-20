@@ -10,6 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import { getAllMaterias } from '../../../../services/materiasApi';
+import { useGroupContext } from '../../../../hooks/GroupContext';
 
 interface FormCreateProps {
   initialValues: any;
@@ -18,7 +19,8 @@ interface FormCreateProps {
 
 const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
 
-  const [materiasL, setMateriasL] = React.useState([]);  
+  const [materiasL, setMateriasL] = React.useState([]);
+  const { selectedPlan } = useGroupContext();  
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
@@ -26,7 +28,7 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
     },
   });
   const getMaterias = async () => {
-    const materias = await getAllMaterias();
+    const materias = await getAllMaterias({ plan: selectedPlan._id });
     setMateriasL(materias);
   };
 

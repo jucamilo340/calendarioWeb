@@ -75,6 +75,7 @@ interface IUpdateDateEventCalendar {
 
 export const updateEventCalendar = async (data: IUpdateEventCalendar) => {
   try {
+    console.log('entraaa 1');
     const response = await api.put(UPDATE_EVENT_CALENDAR, data);
     return response.data;
   } catch (err) {
@@ -83,6 +84,7 @@ export const updateEventCalendar = async (data: IUpdateEventCalendar) => {
 };
 
 export const updateDateEventCalendar = async (data: IUpdateDateEventCalendar) => {
+  console.log('entraaa 2');
     const response = await api.put(UPDATE_DATE_EVENT_CALENDAR, data);
     return response.data;
 };

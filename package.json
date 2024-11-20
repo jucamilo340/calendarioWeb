@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@fullcalendar/adaptive": "^6.1.10",
     "@fullcalendar/common": "^5.11.3",
+    "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^5.11.3",
     "@fullcalendar/interaction": "^5.11.3",
     "@fullcalendar/moment": "^5.11.3",
