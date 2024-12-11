@@ -24,6 +24,8 @@ export const DELETE_SALON = (id:string) => `/api/salon/${id}`;
 
 export const CREATE_GRUPO = `/api/grupo`;
 export const GET_GRUPO = (id: string) => `/api/grupo/${id}`;
+export const GET_ASIGNACIONES = (id: string) => `/api/grupo/asignaciones/${id}`;
+export const UPDATE_ASIGNACION = `/api/grupo/asignaciones`;
 export const GET_GRUPO_ALL = `/api/grupo/all`;
 export const UPDATE_GRUPO = `/api/grupo`;
 export const DELETE_GRUPO = (id: string) => `/api/grupo/${id}`;

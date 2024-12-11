@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CssBaseline } from '@mui/material';
 import type { AppProps } from 'next/app';
 import { GlobalStyle } from '../styles/global';

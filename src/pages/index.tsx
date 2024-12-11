@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Button, Typography } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";

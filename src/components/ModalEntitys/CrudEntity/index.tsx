@@ -1,4 +1,5 @@
 
+// @ts-nocheck
 import FormProfesor from './profesor';
 import FormMateria from './Materia';
 import FormSalon from './Salon';

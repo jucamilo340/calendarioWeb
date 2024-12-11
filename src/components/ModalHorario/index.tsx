@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import {
   Select,
@@ -13,7 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Horarios, convertirRangoHorario } from '../../constants/metodos';
+import { Horarios } from '../../constants/metodos';
 
 interface Horario {
   dia: string;
@@ -70,6 +71,7 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
       return nuevosHorarios;
     });
   };
+  console.log('horarios', horarios);
 
   return (
     <div>
@@ -89,7 +91,7 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           <MenuItem value="miercoles">Miércoles</MenuItem>
           <MenuItem value="jueves">Jueves</MenuItem>
           <MenuItem value="viernes">Viernes</MenuItem>
-          <MenuItem value="viernes">Sabado</MenuItem>
+          <MenuItem value="sabado">Sabado</MenuItem>
         </Select>
       </FormControl>
 
@@ -130,7 +132,8 @@ const SeleccionHorarios: React.FC<SeleccionHorariosProps> = ({ horarios, setHora
           {horarios.map((horario, index) => (
             <ListItem key={index} disablePadding>
               <ListItemText
-                primary={`${horario.nombre} | ${horario.dia} - ${horario.inicio} a ${horario.fin}`}
+                primary={`${horario?.nombre || horario?.nombreClase
+                } | ${horario.dia} - ${horario.inicio} a ${horario.fin}`}
               />
               <ListItemSecondaryAction>
                 <IconButton

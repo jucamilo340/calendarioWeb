@@ -2,8 +2,10 @@ import api from './api';
 import {
   CREATE_GRUPO,
   DELETE_GRUPO,
+  GET_ASIGNACIONES,
   GET_GRUPO,
   GET_GRUPO_ALL,
+  UPDATE_ASIGNACION,
   UPDATE_GRUPO,
 } from './Routes'; // Make sure to adjust the import based on your actual Routes file
 
@@ -42,6 +44,15 @@ export const getAllGrupos = async () => {
   }
 };
 
+export const getAsignaciones = async (id: string) => {
+  try {
+    const response = await api.get(GET_ASIGNACIONES(id));
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+};
+
 interface IUpdateGrupo {
   grupo: {
     _id: string;
@@ -58,6 +69,12 @@ export const updateGrupo = async (data: IUpdateGrupo) => {
   } catch (err) {
     return err;
   }
+};
+
+export const updateAsignacion = async (data: any) => {
+    console.log('data',  data);
+    const response = await api.put(UPDATE_ASIGNACION, data);
+    return response.data;
 };
 
 

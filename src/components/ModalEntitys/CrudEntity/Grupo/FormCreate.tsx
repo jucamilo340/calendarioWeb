@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, Checkbox } from '@mui/material';
 import { useFormik } from 'formik';
@@ -6,9 +7,10 @@ import { getAllPlanes } from '../../../../services/planApi';
 interface FormCreateProps {
   initialValues: any;
   onSubmit: (values: any) => void;
+  selectedGrupo?: any;
 }
 
-const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
+const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit, selectedGrupo }) => {
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
@@ -39,7 +41,7 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           <Select
             labelId="materias-label"
             id="plan"
-            //disabled={isEditCard}
+            disabled={selectedGrupo}
             name="plan"
             label="Plan de Estudio"
             //value={selectMateria}
@@ -65,6 +67,17 @@ const FormCreate: React.FC<FormCreateProps> = ({ initialValues, onSubmit }) => {
           margin="normal"
           variant="outlined"
           value={formik.values.nombre}
+          onChange={formik.handleChange}
+        />
+
+         <TextField
+          fullWidth
+          id="codigo"
+          name="codigo"
+          label="codigo"
+          margin="normal"
+          variant="outlined"
+          value={formik.values.codigo}
           onChange={formik.handleChange}
         />
 

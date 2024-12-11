@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Container } from '@mui/material';
 

@@ -28,12 +28,8 @@ interface ICreateProfesor {
 }
 
 export const createProfesor = async (data: ICreateProfesor) => {
-  try {
     const response = await api.post(CREATE_PROFESOR, data);
-    return response.data;
-  } catch (err) {
-    return err;
-  }
+    return response?.data;
 };
 
 interface IGetProfesor {
@@ -49,7 +45,7 @@ export const getProfesor = async ({ id }: IGetProfesor) => {
   }
 };
 
-export const getAllProfesores = async ({ materiaId, horario, eventoId }: { materiaId?: string, horario?: any, eventoId?:string } = {}) => {
+export const getAllProfesores = async ({ materiaId, grupoId, horario, eventoId }: { materiaId?: string, grupoId?:any, horario?: any, eventoId?:string } = {}) => {
   try {
     const params: Record<string, string> = {};
     if (materiaId) {
@@ -60,6 +56,9 @@ export const getAllProfesores = async ({ materiaId, horario, eventoId }: { mater
     }
     if (eventoId) {
       params.eventoId = eventoId;
+    }
+    if (grupoId) {
+      params.grupo = grupoId;
     }
 
     const response = await api.get(GET_PROFESOR_ALL, { params });

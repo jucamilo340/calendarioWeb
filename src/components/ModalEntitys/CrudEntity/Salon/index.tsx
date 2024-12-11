@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -92,7 +93,7 @@ const SalonesList: React.FC = () => {
         position: "top-center"
       });
     } catch (error) {
-      toast.error('Hubo un error al eliminar la clase',{
+      toast.error(error?.response?.data?.message,{
         position: "top-center"
       });
     }

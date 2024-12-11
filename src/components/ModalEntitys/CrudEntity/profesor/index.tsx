@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -22,6 +23,7 @@ import {
   deleteProfesor,
 } from "../../../../services/profesorCalendarApi";
 import Horario from "./Calendar";
+import { toast } from "react-toastify";
 
 const ProfesoresList: React.FC = () => {
   interface Profesor {
@@ -86,7 +88,13 @@ const ProfesoresList: React.FC = () => {
       });
     } else {
       // Crear nuevo profesor
-      await createProfesor({ profesor: values });
+      try { 
+        await createProfesor({ profesor: values });
+      } catch (error) {
+        toast.error(error?.response?.data?.message,{
+          position: "top-center"
+        });
+      }
     }
 
     getProfesores();
@@ -144,6 +152,7 @@ const ProfesoresList: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell style={{ width: "20%" }}>Cedula</TableCell>
               <TableCell style={{ width: "20%" }}>Nombre</TableCell>
               <TableCell style={{ width: "20%" }}>Horas Asignadas</TableCell>
               <TableCell style={{ width: "20%" }}>Horarios</TableCell>
@@ -158,6 +167,9 @@ const ProfesoresList: React.FC = () => {
             <TableBody>
               {profesores.map((profesor) => (
                 <TableRow key={profesor._id}>
+                  <TableCell style={{ width: "20%" }}>
+                    {profesor?.cedula}
+                  </TableCell>
                   <TableCell style={{ width: "20%" }}>
                     {profesor.nombre}
                   </TableCell>

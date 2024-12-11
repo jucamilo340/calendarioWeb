@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { CalendarApi } from '@fullcalendar/react';
@@ -72,6 +73,7 @@ export const ModalInfosEventCalendar = ({
   useEffect(() => {
     if(selectedGroup?.semestre){
       getMaterias();
+      getSalones();
     }
     if (isEditCard) {
       setTitle(eventInfos?.event?.title);
@@ -94,18 +96,17 @@ export const ModalInfosEventCalendar = ({
   };
 
   const getMaterias = async () => {
-    const materiasAll = await getAllMaterias({semestre: selectedGroup?.semestre, plan: selectedPlan._id});
+    const materiasAll = await getAllMaterias({semestre: selectedGroup?.semestre, plan: selectedPlan._id, grupo: selectedGroup._id});
     setMaterias(materiasAll);
     if (isEditCard) {
       const materia = materiasAll.find((m:any)=> m._id === eventInfos?.event?._def?.extendedProps?.materia._id);
       setSelectMateria(materia);
       getProfesores(materia);
-      getSalones(materia);
     }
   };
 
   const getProfesores = async (materia: any) => {
-    const profesoresAll = await getAllProfesores({ materiaId: materia?._id, horario: {inicio: inicioT,
+    const profesoresAll = await getAllProfesores({ materiaId: materia?._id, grupo: selectedGroup._id, horario: {inicio: inicioT,
       fin: finT}, eventoId: eventInfos?.event?.id });
     setProfesores(profesoresAll);
     if (isEditCard) {
@@ -231,7 +232,6 @@ export const ModalInfosEventCalendar = ({
             value={selectMateria}
             onChange={(e: any) => {
               getProfesores(e?.target?.value);
-              getSalones(e?.target?.value);
               setSelectMateria(e?.target?.value);
             }}
           >

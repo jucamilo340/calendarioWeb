@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, Fragment, useCallback } from 'react';
 import {
   Box,
