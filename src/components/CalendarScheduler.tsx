@@ -147,28 +147,34 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     try {
       await generarHorario(selectedGroup?._id, accion);
       setfetchData(!fetchData);
+      setLoading(false);
       toast.success("Horario generado Exitosamente !", {
         position: "top-center"
       });
     } catch (error:any) {
-      if(accion === 'generar'){
-        const fiftyMinutes = 60 * 60 * 1000;
-      setTimeout(() => {
-        setfetchData(!fetchData);
-        setLoading(false);
-        console.log('entraaaa');
-        toast.success("Horario generado Exitosamente!", {
-          position: "top-center"
-        });
-        return;
-      }, fiftyMinutes);
-      }
+      // if(accion === 'generar'){
+      //   const fiftyMinutes = 50 * 60 * 1000;
+      //   const oneMinute = 60 * 1000;
+      // setTimeout(() => {
+      //   setfetchData(!fetchData);
+      //   setLoading(false);
+      //   console.log('entraaaa');
+      //   toast.success("Horario generado Exitosamente 2as !", {
+      //     position: "top-center"
+      //   });
+      //   return;
+      // }, fiftyMinutes);
+      // }
       if(error?.response?.data?.message === "Hay materias sin profesor asignado"){
         setLoading(false);
         toast.error('Hay materias sin profesor asignado',{
           position: "top-center"
         });
       }
+      setLoading(false);
+      toast.error('a ocurrido un error',{
+        position: "top-center"
+      });
     }
   };
 
@@ -473,7 +479,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     <ModalReport open={openReport} onClose={handleCloseReport} />
     <ModalConfig open={openConfig} onClose={handleCloseConfig} />
     <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-        <DialogTitle>¿Estás seguro de {accionLoad === 'Generando Horario' ? 'Generar un Horario, este proceso podrias demorar en Produccion (50min)' : accionLoad === 'Cargar datos' ? 'Cargar datos este proceso eliminara la data actual' : accionLoad}?</DialogTitle>
+        <DialogTitle>¿Estás seguro de {accionLoad === 'Generando Horario' ? 'Generar un Horario para este Grupo' : accionLoad === 'Cargar datos' ? 'Cargar datos este proceso eliminara la data actual' : accionLoad}?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Esta acción no se puede deshacer. ¿Deseas continuar?
