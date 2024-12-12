@@ -21,7 +21,7 @@ Este proyecto es una aplicación web para la generación de horarios académicos
 Clona el repositorio, instala las dependencias y ejecuta el proyecto con un solo comando:
 
 ```bash
-git clone https://github.com/tu-usuario/fullcalendar-scheduler-client.git && \
-cd fullcalendar-scheduler-client && \
+git clone https://github.com/jucamilo340/calendarioWeb.git
+cd calendarioWeb && \
 npm run init
 
