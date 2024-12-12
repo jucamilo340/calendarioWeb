@@ -113,9 +113,9 @@ const SalonesList: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
+              <TableCell>Tipo</TableCell>
               <TableCell>Capacidad</TableCell>
               <TableCell>Horario</TableCell>
-              <TableCell>Tipo</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>

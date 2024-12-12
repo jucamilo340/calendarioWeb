@@ -57,12 +57,13 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     }
     if(accionLoad === 'Cargar datos'){
       await generarHorarioEventos('crear');
-      setShowAlert(false);
       window.location.reload();
+      setShowAlert(false);
       return;
     }
     if(accionLoad === 'Generando Horario'){
       await generarHorarioEventos('generar');
+      
       return;
     }
     if(accionLoad === 'Eliminar data'){
@@ -152,29 +153,28 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         position: "top-center"
       });
     } catch (error:any) {
-      // if(accion === 'generar'){
-      //   const fiftyMinutes = 50 * 60 * 1000;
-      //   const oneMinute = 60 * 1000;
-      // setTimeout(() => {
-      //   setfetchData(!fetchData);
-      //   setLoading(false);
-      //   console.log('entraaaa');
-      //   toast.success("Horario generado Exitosamente 2as !", {
-      //     position: "top-center"
-      //   });
-      //   return;
-      // }, fiftyMinutes);
-      // }
-      if(error?.response?.data?.message === "Hay materias sin profesor asignado"){
+      //  if(accion === 'crear'){
+      //    const fiftyMinutes = 100 * 60 * 1000;
+      //  setTimeout(() => {
+      //    setLoading(false);
+      //    toast.success("Carga de datos exitosa!", {
+      //      position: "top-center"
+      //    });
+      //    window.location.reload();
+      //    return;
+      //  }, fiftyMinutes);
+      //  }else {
+        if(error?.response?.data?.message === "Hay materias sin profesor asignado"){
+          setLoading(false);
+          toast.error('Hay materias sin profesor asignado',{
+            position: "top-center"
+          });
+        }
         setLoading(false);
-        toast.error('Hay materias sin profesor asignado',{
+        toast.error('a ocurrido un error',{
           position: "top-center"
         });
-      }
-      setLoading(false);
-      toast.error('a ocurrido un error',{
-        position: "top-center"
-      });
+       //}
     }
   };
 
@@ -479,7 +479,7 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     <ModalReport open={openReport} onClose={handleCloseReport} />
     <ModalConfig open={openConfig} onClose={handleCloseConfig} />
     <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-        <DialogTitle>¿Estás seguro de {accionLoad === 'Generando Horario' ? 'Generar un Horario para este Grupo' : accionLoad === 'Cargar datos' ? 'Cargar datos este proceso eliminara la data actual' : accionLoad}?</DialogTitle>
+        <DialogTitle>¿Estás seguro de {accionLoad === 'Generando Horario' ? 'Generar un Horario para este Grupo' : accionLoad === 'Cargar datos' ? 'Cargar datos este proceso eliminara la data actual y puede tardar demasiado (2 horas)' : accionLoad}?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Esta acción no se puede deshacer. ¿Deseas continuar?
